@@ -135,7 +135,12 @@ jobs:
           fi
           echo "Deployment bundle ready: dist/ contains $(find dist -type f | wc -l) files."
 
-      - name: Check for Hostinger Deployment Secrets
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Check for Hostinger Deployment Secrets & Validate Endpoint
         id: check-secrets
         env:
           FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
@@ -147,20 +152,103 @@ jobs:
             echo "### ⚠️ Deployment Secrets Missing" >> $GITHUB_STEP_SUMMARY
             echo "The CI build and validation succeeded, but deployment was skipped because Hostinger FTP secrets are not configured in GitHub repository settings." >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**To enable automated deployment, configure these Repository Secrets:**" >> $GITHUB_STEP_SUMMARY
-            echo "1. \`HOSTINGER_FTP_SERVER\` (e.g. \`ftp.pranast.com\` or server IP)" >> $GITHUB_STEP_SUMMARY
+            echo "**To enable automated deployment, configure these Secrets in GitHub (Repository or 'production' Environment):**" >> $GITHUB_STEP_SUMMARY
+            echo "1. \`HOSTINGER_FTP_SERVER\` (Hostinger Server IP, e.g. \`147.79.69.127\`, or root domain \`pranast.com\` — do NOT use protocol prefixes like \`ftps://\` or unconfigured subdomains like \`ftp.pranast.com\`)" >> $GITHUB_STEP_SUMMARY
             echo "2. \`HOSTINGER_FTP_USERNAME\` (e.g. \`u715171369@pranast.com\` or FTP account name)" >> $GITHUB_STEP_SUMMARY
             echo "3. \`HOSTINGER_FTP_PASSWORD\` (FTP account password created in Hostinger hPanel)" >> $GITHUB_STEP_SUMMARY
             echo "4. \`HOSTINGER_TARGET_DIR\` (Optional, defaults to \`public_html/\`)" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "has_secrets=true" >> $GITHUB_OUTPUT
+            exit 0
           fi
+
+          node - << 'EOF'
+          const dns = require('dns').promises;
+          const fs = require('fs');
+
+          async function main() {
+            const rawServer = process.env.FTP_SERVER || '';
+            let server = rawServer.trim()
+              .replace(/^[a-zA-Z0-9+.-]+:\/\//, '')
+              .replace(/\/.*$/, '')
+              .replace(/:[0-9]+$/, '')
+              .trim();
+
+            if (!server) {
+              console.error('::error::HOSTINGER_FTP_SERVER secret is empty or invalid.');
+              process.exit(1);
+            }
+
+            let resolvedIp = null;
+            let fallbackUsed = false;
+
+            try {
+              const res = await dns.lookup(server, { family: 4 });
+              resolvedIp = res.address;
+            } catch (err) {
+              if (server.startsWith('ftp.')) {
+                const parentDomain = server.replace(/^ftp\./, '');
+                try {
+                  const res = await dns.lookup(parentDomain, { family: 4 });
+                  resolvedIp = res.address;
+                  server = parentDomain;
+                  fallbackUsed = true;
+                } catch (parentErr) {}
+              }
+            }
+
+            if (!resolvedIp) {
+              const summary = [
+                '### ❌ Hostinger Deployment Failed: FTP Host Unreachable',
+                `Could not resolve FTP server \`${rawServer}\` via DNS.`,
+                '',
+                '**Cause:**',
+                'The host specified in \`HOSTINGER_FTP_SERVER\` does not exist in DNS (NXDOMAIN). Hostinger does not automatically configure an \`ftp.\` CNAME or A record for custom domains.',
+                '',
+                '**Recommended Fix:**',
+                '1. Go to **Hostinger hPanel** &rsaquo; **Websites** &rsaquo; **Manage** &rsaquo; **FTP Accounts**.',
+                '2. Copy the **FTP IP** or Hostinger Server IP (e.g. \`147.79.69.127\`).',
+                '3. Update \`HOSTINGER_FTP_SERVER\` in GitHub Secrets (or environment secrets) to this IP address or root domain \`pranast.com\` (without \`ftps://\` or \`ftp://\` prefix).',
+                ''
+              ].join('\n');
+
+              if (process.env.GITHUB_STEP_SUMMARY) {
+                fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+              }
+              console.error(`::error::FTP server '${rawServer}' cannot be resolved via DNS.`);
+              process.exit(1);
+            }
+
+            if (fallbackUsed) {
+              const notice = [
+                '### ℹ️ Hostinger FTP Server Fallback Notice',
+                `\`HOSTINGER_FTP_SERVER\` was configured as \`${rawServer}\`, but no DNS record exists for that host.`,
+                `The pipeline automatically fell back to root domain \`${server}\` (IPv4: \`${resolvedIp}\`).`,
+                '',
+                'To optimize resolution, update your \`HOSTINGER_FTP_SERVER\` secret directly to \`pranast.com\` or the server IP in GitHub repository secrets.',
+                ''
+              ].join('\n');
+              if (process.env.GITHUB_STEP_SUMMARY) {
+                fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, notice);
+              }
+              console.log(`Automatic fallback applied: using ${server} (${resolvedIp})`);
+            }
+
+            if (process.env.GITHUB_OUTPUT) {
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `has_secrets=true\n`);
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `ftp_server=${server}\n`);
+            }
+          }
+
+          main().catch(err => {
+            console.error('Validation error:', err);
+            process.exit(1);
+          });
+          EOF
 
       - name: Synchronize Static Files to Hostinger (FTPS)
         if: steps.check-secrets.outputs.has_secrets == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          server: ${{ steps.check-secrets.outputs.ftp_server }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
           protocol: ftps

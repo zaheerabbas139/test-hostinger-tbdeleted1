@@ -99,7 +99,7 @@ To enable automated synchronization to Hostinger, add the following secrets in G
 
 | Secret Name | Required | Description | Example / Recommendation |
 |---|---|---|---|
-| `HOSTINGER_FTP_SERVER` | **Yes** | Hostinger FTP Hostname or Server IP | `ftp.pranast.com` or `185.xxx.xxx.xxx` (find in hPanel &rsaquo; Files &rsaquo; FTP Accounts) |
+| `HOSTINGER_FTP_SERVER` | **Yes** | Hostinger FTP Hostname or Server IP | Hostinger Server IP (e.g. `147.79.69.127` found in hPanel &rsaquo; Files &rsaquo; FTP Accounts) or root domain `pranast.com`. **Do not** prefix with `ftps://` or `ftp://`, and **do not** use `ftp.pranast.com` unless an `ftp` DNS record has been explicitly created. |
 | `HOSTINGER_FTP_USERNAME` | **Yes** | Hostinger FTP Account Username | `u715171369@pranast.com` or standalone FTP user |
 | `HOSTINGER_FTP_PASSWORD` | **Yes** | Hostinger FTP Account Password | Secure generated password created in hPanel |
 | `HOSTINGER_TARGET_DIR` | Optional | Destination directory relative to FTP root | `public_html/` (for root domain) or `public_html/uat/` (for UAT subdomain) |

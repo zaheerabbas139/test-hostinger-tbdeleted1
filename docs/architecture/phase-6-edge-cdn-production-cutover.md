@@ -56,7 +56,7 @@ Static assets are compiled locally or via GitHub Actions and synchronized via se
 
 ### 3.1. Configure GitHub Actions Secrets
 In GitHub repository settings (**Settings &rarr; Secrets and variables &rarr; Actions**):
-* `HOSTINGER_FTP_SERVER` &rarr; e.g. `ftp.pranast.com`
+* `HOSTINGER_FTP_SERVER` &rarr; Hostinger Server IP (e.g. `147.79.69.127`) or root domain `pranast.com` (avoid `ftp.pranast.com` unless DNS record exists)
 * `HOSTINGER_FTP_USERNAME` &rarr; e.g. `u715171369@pranast.com`
 * `HOSTINGER_FTP_PASSWORD` &rarr; `<Hostinger-FTP-Password>`
 

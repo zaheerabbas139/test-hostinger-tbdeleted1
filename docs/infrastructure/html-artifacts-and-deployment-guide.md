@@ -112,7 +112,7 @@ Ensure the following three secrets are set in your GitHub repository (**Settings
 
 | Secret Name | Value Example | Description |
 |---|---|---|
-| `HOSTINGER_FTP_SERVER` | `ftp.pranast.com` or Hostinger Server IP | FTP host from hPanel |
+| `HOSTINGER_FTP_SERVER` | Hostinger Server IP or `pranast.com` | FTP host from hPanel (do not prefix with `ftps://` or use `ftp.pranast.com`) |
 | `HOSTINGER_FTP_USERNAME` | `u715171369@pranast.com` | FTP account username |
 | `HOSTINGER_FTP_PASSWORD` | `••••••••••••` | FTP account password |
 | `HOSTINGER_TARGET_DIR` | `public_html/` | Target directory on server |
