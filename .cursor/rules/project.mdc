@@ -1,0 +1,44 @@
+---
+description: Core project rules — always injected into every Cursor AI session for this repo.
+globs: "**/*"
+alwaysApply: true
+---
+
+# Pranast Website — Cursor Rules
+
+> Full persona & architectural philosophy: `GEMINI.md`
+> Full architecture map, schema refs, coding standards: `CLAUDE.md`
+
+## Commands
+```sh
+npm run dev      # Astro dev server (localhost:4321)
+npm run build    # SSG build → dist/ + copies to repo root
+npm run check    # TS + Astro content schema validation
+npm run preview  # Preview built output
+```
+
+## Stack
+- Astro 7 · SSG · Islands architecture · zero client-JS by default
+- Tailwind CSS v4 via `@tailwindcss/vite` (no `tailwind.config.js`)
+- TypeScript strict · path alias `@/*` → `src/*`
+- Deploy: GitHub Actions → FTPS → Hostinger `public_html/`
+
+## Key Paths
+| Path | Purpose |
+|------|---------|
+| `src/content/` | Markdown source — blog/, case-studies/, pages/ |
+| `src/content.config.ts` | Zod schemas for all 3 collections |
+| `src/pages/` | Astro routes (index, [...slug], blog/, case-studies/) |
+| `src/components/` | Header, Footer, ContactForm, FaqAccordion, BridgeADTabs |
+| `src/layouts/BaseLayout.astro` | Root HTML shell + global SEO meta |
+| `astro.config.mjs` | Site config (output: static, Vite plugins) |
+| `dist/` | Build output — **never edit manually** |
+
+## Rules
+- Content edits → `.md` files in `src/content/` only; never touch `dist/`
+- After schema changes → `npm run check`
+- After code changes → `npm run build`; confirm `dist/index.html` exists
+- No client-side JS unless required; use `client:load` / `client:idle` sparingly
+- Never edit `package-lock.json` directly
+- Surgical edits only — prefer minimal diffs over file rewrites
+

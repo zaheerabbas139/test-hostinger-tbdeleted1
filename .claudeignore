@@ -1,0 +1,73 @@
+# Build artifacts & generated output
+dist/
+_astro/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.lock
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Binary & media assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+*.mp4
+*.mp3
+*.woff
+*.woff2
+*.ttf
+*.eot
+public/assets/
+
+# Minified / compiled CSS bundles (in dist)
+_astro/*.css
+_astro/*.js
+
+# Large data files
+*.xml
+scripts/media-manifest.json
+
+# Legacy / archived files
+legacy/
+
+# Analysis / audit docs (large, rarely needed in context)
+deeppink-vs-pranast-content-deviations.md
+
+# Static HTML pages copied to root during build (use src/ instead)
+blog/
+case-studies/
+bridgead/
+cloud-infrastructure/
+cloudflare/
+contact/
+cyber-security/
+digital-transformation/
+faq/
+it-support-managed-services/
+privacy-policy/
+terms-of-service/
+who-we-are/
+index.html
+favicon.png
+favicon.svg
+apple-touch-icon.png
+
+# Coverage & test artifacts
+coverage/
+.nyc_output/
+
