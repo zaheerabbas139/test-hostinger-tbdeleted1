@@ -15,6 +15,7 @@ This repository serves as the central codebase and technical knowledge hub for t
 | **Framework** | **Astro 7.4.x** | Static Site Generation (`output: 'static'`), zero-JS default, islands architecture |
 | **Styling** | **Tailwind CSS 4.3.x** | Native Vite integration via `@tailwindcss/vite`, CSS-first tokens in `src/styles/global.css` |
 | **Content Engine** | **Astro Content Layer API** | Typed markdown collections defined in `src/content.config.ts` using `glob` loader and Zod |
+| **SEO & Sitemap** | **`@astrojs/sitemap`** | Automated XML sitemap generation with crawl priorities, change frequencies, and index discovery |
 | **Language & Tooling**| **TypeScript 5.9.x** / `@astrojs/check` | Strict frontmatter type safety, AST checking, compile-time validation |
 | **Deployment Target** | **Hostinger Web Hosting** | Automated FTPS deployment to `public_html` |
 | **Edge CDN & DNS** | **Cloudflare** | Edge redirects (Bulk CSV / Workers), SSL/TLS Full (Strict), WAF security |
@@ -29,6 +30,7 @@ The codebase was recently modernized to **Astro 7** and **Tailwind CSS v4**:
 * **CSS-First Theme Tokens:** Brand colors (`brand-50` through `brand-900`) and theme settings are now configured directly in `src/styles/global.css` via `@theme` and `@import "tailwindcss";`. Layouts consume them via `@reference`.
 * **Content Layer API Migration:** Migrated content configuration from legacy `src/content/config.ts` to modern root `src/content.config.ts` utilizing `glob` loaders (`astro/loaders`) with deterministic slug-based identifiers (`generateSlugId`).
 * **Modern Content Rendering API:** Dynamic page templates (`[...slug].astro`, `blog/[slug].astro`, `case-studies/[slug].astro`) use `render(entry)` from `astro:content` and query entries by `entry.id`.
+* **Automated XML Sitemap & SEO Hierarchy:** Configured `@astrojs/sitemap` integration in `astro.config.mjs` with URL serialization (custom `priority` and `changefreq` per section), automatic 404 exclusion filtering, `<link rel="sitemap">` head discovery in `BaseLayout.astro`, and `public/robots.txt` indexing directives.
 
 ---
 

@@ -38,7 +38,7 @@ pranast-website/
 ├── public/                # Static assets copied verbatim to dist/
 ├── scripts/               # One-off Python/JS migration utilities
 ├── docs/                  # Architecture & infra docs (read these, not duplicated here)
-├── astro.config.mjs       # output:'static', site:'https://uat.pranast.com', Tailwind via Vite
+├── astro.config.mjs       # output:'static', site:'https://pranast.com', Tailwind v4 via Vite, @astrojs/sitemap
 ├── tsconfig.json          # extends astro/strict; path alias @/* → src/*
 └── .github/workflows/     # CI (ci.yml) + FTP deploy to Hostinger (deploy-hostinger.yml)
 ```

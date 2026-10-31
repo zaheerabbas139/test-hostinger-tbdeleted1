@@ -264,3 +264,22 @@ Results: 37 passed, 0 failed out of 37 tests.
 3. **Hostinger Server Access Logs:**
    - Verify error logs in hPanel remain clean and free of rewrite loop notices (`Request exceeded the limit of 10 internal redirects`).
 
+### 6.4. Automated XML Sitemap Generation & Priority Matrix
+The static site build automatically generates a search engine sitemap index and sub-sitemaps via `@astrojs/sitemap` configured in `astro.config.mjs`:
+* **Sitemap Endpoints:**
+  - `https://pranast.com/sitemap-index.xml` (root index)
+  - `https://pranast.com/sitemap-0.xml` (URL listing)
+* **Crawler Discovery:**
+  - `<link rel="sitemap" href="/sitemap-index.xml" />` declared in `<head>` via `src/layouts/BaseLayout.astro`.
+  - `Sitemap: https://pranast.com/sitemap-index.xml` specified in `public/robots.txt`.
+* **Priority & Change Frequency Hierarchy (`serialize`):**
+  | URL Route / Pattern | Priority | Change Frequency | Rationale |
+  | :--- | :---: | :---: | :--- |
+  | `/` (Homepage) | `1.0` | `weekly` | Primary landing page and domain root |
+  | Service & Core Pages (`/cyber-security/`, `/cloud-infrastructure/`, `/digital-transformation/`, `/it-support-managed-services/`, `/bridgead/`, `/who-we-are/`, `/contact/`) | `0.9` | `monthly` | High commercial value service landing pages |
+  | Articles & Evidence (`/blog/*`, `/case-studies/*`) | `0.8` | `monthly` | Editorial thought leadership and client outcomes |
+  | Categories & Resources (`/category/*`, `/faq/`) | `0.7` | `monthly` | Resource indexes and frequently asked questions |
+  | Legal Policies (`/privacy-policy/`, `/terms-of-service/`) | `0.3` | `yearly` | Statutory compliance pages with low change frequency |
+* **Exclusions (`filter`):** Dynamic 404 pages and internal utility routes are filtered out automatically from the generated sitemap.
+
+
