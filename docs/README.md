@@ -21,6 +21,7 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
 | **Infrastructure** | [GitHub Actions CI/CD Pipeline](infrastructure/github-actions-ci-cd.md) | DevOps, Frontend Engineers | Implemented & Production-Ready | Automated build, type-checking (`astro check`), security audit, and secure FTPS deployment to Hostinger. |
+| **Infrastructure** | [Build Artifacts & Deployment Strategy](infrastructure/html-artifacts-and-deployment-guide.md) | DevOps, Frontend Engineers | Reference Guide | Architectural guide explaining why `.html` artifacts are generated, Git vs CI/CD comparison, and cleanup steps. |
 | **Development** | [Local Development & Execution Guide](local-development.md) | Frontend Engineers, Contributors | Active Guide | Setup, running the Astro dev server, production preview, type checks, and troubleshooting. |
 
 ---
