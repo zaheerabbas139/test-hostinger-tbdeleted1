@@ -7,9 +7,17 @@ const year = new Date().getFullYear();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
       <!-- Col 1: About -->
       <div>
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-xl font-bold tracking-tight text-white">Prana Solutions Tech</span>
-        </div>
+        <a href="/" class="inline-block mb-6 group" aria-label="Prana Solutions Tech Home">
+          <img
+            src="/assets/images/prana-solutions-logo-white.png"
+            alt="Prana Solutions Tech"
+            width="200"
+            height="50"
+            class="h-10 sm:h-11 w-auto object-contain transition-opacity group-hover:opacity-90"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
         <p class="text-sm text-slate-400 mb-6 leading-relaxed">
           Premier Microsoft Solutions Partner delivering enterprise cloud infrastructure, cyber security, managed IT services, and digital transformation across the UK and internationally.
         </p>

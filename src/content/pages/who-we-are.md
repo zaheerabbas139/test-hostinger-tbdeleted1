@@ -16,7 +16,7 @@ We are a premier Microsoft Solutions Partner dedicated to delivering innovative,
 
 ## Driving Digital Excellence
 
-![](/assets/images/prana-Logo-300x50.png)
+![Prana Solutions Tech Logo](/assets/images/prana-solutions-logo.png)
 
 At Prana Solutions, our mission is to empower organisations to achieve their full potential through reliable, secure, and innovative technology. Established with a vision to bring enterprise-grade IT capabilities to forward-thinking businesses, we believe that technology should be a strategic enabler, not a barrier.
 

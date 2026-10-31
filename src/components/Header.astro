@@ -37,12 +37,15 @@ const currentPath = Astro.url.pathname;
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
       <!-- Brand Logo -->
-      <a href="/" class="flex items-center gap-3">
+      <a href="/" class="flex items-center group py-2" aria-label="Prana Solutions Tech Home">
         <img
-          src="/assets/images/cropped-PST_LOGORemovebg.png"
+          src="/assets/images/prana-solutions-logo.png"
           alt="Prana Solutions Tech"
-          class="h-12 w-auto object-contain"
-          onerror="this.onerror=null; this.src='/assets/images/prana-Logo.png';"
+          width="200"
+          height="50"
+          class="h-10 sm:h-12 w-auto object-contain transition-opacity group-hover:opacity-90"
+          fetchpriority="high"
+          decoding="async"
         />
       </a>
 
