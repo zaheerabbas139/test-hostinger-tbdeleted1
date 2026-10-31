@@ -10,6 +10,7 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 |---|---|---|---|---|
 | **Architecture** | [As-Is Tech Stack Analysis](architecture/uat-pranast-tech-stack.md) | Architects, Tech Leads | Baseline Reference | Complete audit of WordPress 6.x, PHP 8.5, LiteSpeed, Elementor, and CDN infrastructure on `uat.pranast.com`. |
 | **Architecture** | [WordPress to Astro Migration Blueprint](architecture/wordpress-to-astro-migration-plan.md) | Frontend Engineers, Architects | Approved Strategy | Technical blueprint for decommissioning WordPress/Elementor and replatforming to Astro Content Engine (SSG + Markdown). |
+| **Architecture** | [Phase 1: Content Inventory & Schema](architecture/phase-1-content-inventory-schema.md) | Frontend Engineers, Content Team | Completed & Validated | Comprehensive inventory of all 17 pages, 6 blog posts, 40 media assets, forms, and Astro Zod collections from WP export. |
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
 
@@ -42,6 +43,7 @@ flowchart TD
 docs/
 ├── README.md                                  # Central architecture & ops hub (this file)
 ├── architecture/                              # System designs, technical audits, and future blueprints
+│   ├── phase-1-content-inventory-schema.md    # Phase 1 WordPress catalog & Astro typed schema
 │   ├── uat-pranast-tech-stack.md              # Current WordPress/PHP/Elementor stack audit
 │   └── wordpress-to-astro-migration-plan.md   # Target Astro + Markdown replatforming blueprint
 └── infrastructure/                            # Infrastructure runbooks, hosting tier & cutover procedures

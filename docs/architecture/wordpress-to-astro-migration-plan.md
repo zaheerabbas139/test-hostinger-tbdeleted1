@@ -54,21 +54,26 @@ flowchart LR
 
 ---
 
-### Phase 1: Content Inventory & Schema Definition
-Before pulling data, catalog all content types on `uat.pranast.com`:
+### Phase 1: Content Inventory & Schema Definition (Completed)
+> **Detailed Specification:** See [Phase 1 Content Inventory & Schema](phase-1-content-inventory-schema.md) for the exact catalog of all 17 pages, 6 articles, 40 media attachments, and typed Zod schema.
+
+Cataloged from `pranasolutionstechlimited.WordPress.2026-10-31.xml`:
 
 1. **Pages Inventory:**
-   - Home Page (`/`)
-   - About Us / Who We Are (`/about-us` or `/who-we-are`)
-   - Services / Solutions pages
-   - Contact Us (`/contact`)
-   - Legal: Privacy Policy (Complianz), Terms of Service
+   - Home Page (`/` - ID 21)
+   - About Us / Who We Are (`/who-we-are` - ID 34)
+   - Services (`/cyber-security`, `/digital-transformation`, `/cloud-infrastructure`, `/it-support-managed-services`)
+   - Technology & Innovation (`/bridgead` - ID 369)
+   - Case Studies (`/case-studies`, `/case-studies/globaltech-solutions`, `/case-studies/premier-law-associates`)
+   - FAQ (`/faq` - ID 177)
+   - Contact Us (`/contact` - ID 12)
+   - Legal: Privacy Policy (`/privacy-policy` - ID 3), Terms of Service (`/terms-of-service` - ID 326)
 2. **Media Inventory:**
-   - Logos, hero banners, icons, team headshots stored in `wp-content/uploads/`.
+   - 40 Attachments cataloged with paths in `wp-content/uploads/` mapped to `public/assets/images/`.
 3. **Forms & Interactive Logic:**
-   - Document all Ninja Forms fields (Name, Email, Phone, Message) to replace with a lightweight modern submission endpoint.
+   - Ninja Form ID 1 (Name, Email, Phone, Subject, Message) documented for replacement with `ContactForm.astro` via Web3Forms/Formspree.
 4. **SEO & Metadata:**
-   - Meta title, meta description, OpenGraph tags, favicons.
+   - Meta title, meta description, and featured images mapped to Astro Frontmatter.
 
 ---
 
