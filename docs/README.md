@@ -47,6 +47,8 @@ flowchart TD
 docs/
 ├── README.md                                  # Central architecture & ops hub (this file)
 ├── architecture/                              # System designs, technical audits, and future blueprints
+│   ├── diagrams/                              # Visual architectural models and system diagrams
+│   │   └── multi-tier-edge-origin-architecture.md # Edge & origin redirect/security topology
 │   ├── phase-1-content-inventory-schema.md    # Phase 1 WordPress catalog & Astro typed schema
 │   ├── phase-2-extraction-scaffolding-report.md # Phase 2 XML parser & Astro project scaffolding
 │   ├── phase-3-ui-polish-components-report.md # Phase 3 BridgeAD and FAQ custom components

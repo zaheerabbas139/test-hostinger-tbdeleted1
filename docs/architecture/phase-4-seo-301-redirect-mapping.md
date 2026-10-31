@@ -38,6 +38,38 @@ We implement a **two-tier defense-in-depth model**:
 1. **Tier 1 (Cloudflare Edge):** Absorbs 95%+ of traffic globally across Cloudflare's 300+ Edge data centers. Delivers instant HTTP 301 redirects, terminates security threats with HTTP 410 Gone, and maps dynamic query parameters.
 2. **Tier 2 (Hostinger Origin `.htaccess`):** Functions as the authoritative fallback layer. Deployed directly with the Astro build (`public/.htaccess` &rarr; `dist/.htaccess`), ensuring absolute URL integrity and security headers even during local testing, staging, or direct IP access.
 
+```mermaid
+flowchart TD
+    Client["Client Request\n(Browser / Googlebot / Malicious Scanner)"] --> DNS["Cloudflare Anycast DNS & Edge Network\n(300+ PoPs Globally)"]
+    
+    subgraph Tier1["Tier 1: Cloudflare Global Edge Layer (<10ms TTFB)"]
+        DNS --> CF_WAF{"Security Filter &\nWAF Rules"}
+        CF_WAF -- "Scanner Traps\n(/wp-admin, /xmlrpc.php, /wp-login)" --> R410["HTTP 410 Gone\n(Fast Abort + noindex Header)"]
+        
+        CF_WAF -- "Valid Traffic" --> CF_Redirect{"Edge Routing Engine\n(Worker & Bulk Rules)"}
+        CF_Redirect -- "Legacy WP Posts/Pages\n(/digital-transformation... -> /blog/...)" --> R301["HTTP 301 Permanent Redirect\n(Preserve Query Strings)"]
+        CF_Redirect -- "Media Uploads\n(/wp-content/uploads/... -> /assets/...)" --> R301_Media["HTTP 301 Permanent Redirect\n(Direct Asset Mapping)"]
+        CF_Redirect -- "Legacy WP Query IDs\n(?p=117 -> /blog/...)" --> R301_Query["HTTP 301 Permanent Redirect\n(Strip Legacy WP Params)"]
+    end
+
+    CF_Redirect -- "Clean Astro Route\n(/who-we-are, /bridgead, /blog/...)" --> Origin{"Origin Web Server\n(Hostinger LiteSpeed / Apache)"}
+
+    subgraph Tier2["Tier 2: Hostinger Origin Server Fallback Layer"]
+        Origin --> H_Rewrite{"Origin .htaccess Engine\n(mod_rewrite & mod_headers)"}
+        H_Rewrite -- "Bypassed Legacy / Malicious URL" --> H_Sec["Origin 301 Redirect / 410 Gone\n(Defense-in-Depth Fallback)"]
+        H_Rewrite -- "Static HTML / Assets" --> Astro_Static["Astro Static Site Files\n(Pre-compiled dist/index.html)"]
+        Astro_Static --> H_Cache["Caching & Security Headers\n(1-Year Assets, 0s HTML, HSTS)"]
+    end
+
+    H_Cache --> Client
+    R301 --> Client
+    R301_Media --> Client
+    R301_Query --> Client
+    R410 --> Client
+```
+
+> **Full Diagram Artifact:** See standalone diagram and layer metrics in [Multi-Tier Edge & Origin Architecture Diagram](diagrams/multi-tier-edge-origin-architecture.md).
+
 ---
 
 ## 3. Master Redirect & Routing Matrix
