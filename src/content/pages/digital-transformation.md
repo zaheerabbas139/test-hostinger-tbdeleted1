@@ -7,12 +7,11 @@ modified: "2026-02-19"
 featured_image: ""
 ---
 
-#
-Digital Transformation Powered by Microsoft Dynamics 365 & AI
+## Digital Transformation Powered by Microsoft Dynamics 365 & AI
 
 Revolutionize your business operations with intelligent automation, advanced analytics, and AI-driven insights using Microsoft's comprehensive platform.
 
-[Get In Touch](https://dev.uat.pranast.com/contact/)
+[Get In Touch](/contact/)
 
 ## Transform Your Business with AI & Automation
 

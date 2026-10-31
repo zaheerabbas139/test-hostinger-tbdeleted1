@@ -7,7 +7,7 @@ modified: "2026-03-24"
 category: "Digital Transformation"
 featured_image: "/assets/images/Google-Sheets-vs-Dynamics-365-comparison.jpg"
 featured_image_alt: "Google Sheets vs Dynamics 365 comparison"
-author: "Prana Solutions Tech"
+author: "Manasa Nadaduru"
 draft: false
 ---
 
@@ -19,7 +19,7 @@ It’s easy to set up, simple to share, and works well when your team is small a
 
 But over time, something shifts.
 
-A single spreadsheet turns into multiple versions.**Different teams start maintaining their own files.
+A single spreadsheet turns into multiple versions. Different teams start maintaining their own files.
 And sooner or later, someone asks a familiar question:
 
 ### “Which one is the latest?”
@@ -89,13 +89,13 @@ With Dynamics 365, much of that becomes part of the system:
 - Data updates in real time
 - Processes run consistently, regardless of who is involved
 
-It shifts the business from being person-dependent** to **process-driven**.
+It shifts the business from being person-dependent to **process-driven**.
 
 ### Automation: The Turning Point
 
 One of the biggest changes businesses experiences is the introduction of automation.
 
-In a spreadsheet-driven setup, everything relies on manual effort.**Even small delays can create bottlenecks.
+In a spreadsheet-driven setup, everything relies on manual effort. Even small delays can create bottlenecks.
 
 With Dynamics 365:
 
@@ -148,9 +148,9 @@ You might start by:
 
 This approach keeps things manageable while delivering visible improvements early on.
 
-Final Thoughts**
+**Final Thoughts**
 
-Google Sheets is a great starting point.**It helps businesses move quickly and stay flexible in the early stages.
+Google Sheets is a great starting point. It helps businesses move quickly and stay flexible in the early stages.
 
 But as complexity increases, the same flexibility can turn into fragmentation.
 
@@ -161,7 +161,7 @@ It’s to recognise when it’s time to move from managing data… to running a 
 
 ### Ready to Move Beyond Spreadsheets?
 
-At Prana Solutions Tech Limited**, we help organisations move from manual, spreadsheet-based processes to structured, scalable systems using Microsoft Dynamics 365 and Power Platform.
+At **Prana Solutions Tech Limited**, we help organisations move from manual, spreadsheet-based processes to structured, scalable systems using Microsoft Dynamics 365 and Power Platform.
 
 Whether you’re just starting to feel the limitations or already facing challenges, we can guide you through a practical, step-by-step transition.
 

@@ -1,378 +1,67 @@
 ---
 /**
  * FaqAccordion.astro
- * Enterprise Interactive FAQ Accordion Component
- * WAI-ARIA / HTML5 <details> semantic disclosure, client-side category filtering & search,
- * and embedded Schema.org FAQPage JSON-LD microdata for rich SEO snippets.
+ * Plain FAQ accordion: optional category headings, one <details> per question,
+ * and Schema.org FAQPage JSON-LD for search engines. No search or filter UI.
  */
 
 export interface FaqItem {
-  id: string;
-  category: 'General' | 'Cloud Solutions' | 'Pricing & Contracts' | 'Managed IT Services' | 'Security';
   question: string;
   answer: string;
 }
 
-export interface Props {
-  initialCategory?: string;
-  items?: FaqItem[];
-  showSearch?: boolean;
+export interface FaqGroup {
+  heading?: string;
+  items: FaqItem[];
 }
 
-const defaultItems: FaqItem[] = [
-  // General
-  {
-    id: 'gen-1',
-    category: 'General',
-    question: 'What services does Prana Solutions Tech offer?',
-    answer:
-      'We offer comprehensive enterprise IT services including 24/7 Managed IT Support, Cloud Architecture & Migration (Microsoft Azure, Microsoft 365), Cyber Security & Zero Trust hardening, and Digital Transformation using Microsoft Dynamics 365, Power Platform, and proprietary tooling such as BridgeAD.',
-  },
-  {
-    id: 'gen-2',
-    category: 'General',
-    question: 'Do you support businesses of all sizes?',
-    answer:
-      'Yes. We partner with small and mid-market organizations through fully outsourced IT operations, as well as large enterprise and public-sector institutions requiring specialized cloud migration engineering, security compliance, or co-managed tier-3 escalation architecture.',
-  },
-  // Cloud Solutions
-  {
-    id: 'cloud-1',
-    category: 'Cloud Solutions',
-    question: 'Can you help migrate our on-premises infrastructure to the cloud?',
-    answer:
-      'Yes. We specialize in end-to-end cloud migrations into Microsoft Azure and hybrid architectures. Our solutions architects baseline your physical and virtual environments, execute non-disruptive pre-flight dry runs, design landing zones aligned with the Microsoft Cloud Adoption Framework (CAF), and orchestrate cutovers with minimal or zero downtime.',
-  },
-  {
-    id: 'cloud-2',
-    category: 'Cloud Solutions',
-    question: 'What are the business and operational benefits of moving to Microsoft 365?',
-    answer:
-      'Microsoft 365 provides enterprise-grade productivity tools, centralized identity via Microsoft Entra ID, unified endpoint management with Microsoft Intune, automated compliance policies, native threat protection via Microsoft Defender, anywhere collaboration, and drastically lower on-premises server licensing and maintenance overhead.',
-  },
-  // Pricing & Contracts
-  {
-    id: 'price-1',
-    category: 'Pricing & Contracts',
-    question: 'How is pricing structured for your services?',
-    answer:
-      'We offer transparent, predictable pricing models tailored to your requirements: fixed monthly per-user/per-device pricing for Managed Services with guaranteed SLAs; milestone-based fixed-fee statements of work (SOW) for cloud migrations and implementations; and flexible architectural consulting retainers.',
-  },
-  {
-    id: 'price-2',
-    category: 'Pricing & Contracts',
-    question: 'What is the typical contract length for managed IT services?',
-    answer:
-      'Our standard managed services agreements are 12 months with quarterly business reviews (QBRs) and predictable monthly invoicing. We also offer multi-year agreements with price protection, as well as short-term project statements of work for specific migration or audit engagements.',
-  },
-  // Managed IT Services
-  {
-    id: 'managed-1',
-    category: 'Managed IT Services',
-    question: 'What is included in your Managed IT Services agreements?',
-    answer:
-      'Our managed services include proactive 24/7/365 infrastructure monitoring, unlimited helpdesk remote user support, automated patch management for OS and third-party software, cloud backup and disaster recovery validation, endpoint antivirus and EDR management, and proactive vendor escalation management.',
-  },
-  {
-    id: 'managed-2',
-    category: 'Managed IT Services',
-    question: 'What is your guaranteed response time for technical support requests?',
-    answer:
-      'We guarantee an initial response time of under 15 minutes for critical Priority 1 (business-down) incidents, and under 2 hours for standard service requests. Our Network Operations Center (NOC) and Service Desk operate 24/7/365 with automated escalation pathways.',
-  },
-  // Security
-  {
-    id: 'sec-1',
-    category: 'Security',
-    question: 'How do you protect our organization against cyber threats and ransomware?',
-    answer:
-      'We deploy a multi-layered Zero Trust defense model utilizing the Microsoft Security Stack: Microsoft Defender for Endpoint/Office 365, Microsoft Sentinel SIEM/SOAR, Microsoft Entra Conditional Access with mandatory MFA, automated phishing simulations, privileged access management, and round-the-clock threat telemetry monitoring.',
-  },
-  {
-    id: 'sec-2',
-    category: 'Security',
-    question: 'Do you provide regulatory compliance and security audit support?',
-    answer:
-      'Yes. We actively guide organizations through certifications and regulatory standards including ISO 27001, Cyber Essentials / Cyber Essentials Plus, GDPR, HIPAA, and SOC 2. We perform gap assessments, implement compensating technical controls, and provide immutable audit evidence for certifying bodies.',
-  },
-];
+export interface Props {
+  groups: FaqGroup[];
+}
 
-const { initialCategory = 'All', items = defaultItems, showSearch = true } = Astro.props;
+const { groups } = Astro.props;
 
-const categories = ['All', 'General', 'Cloud Solutions', 'Pricing & Contracts', 'Managed IT Services', 'Security'];
-
-// Generate Schema.org FAQPage JSON-LD for rich snippets
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: items.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: item.answer,
-    },
-  })),
+  mainEntity: groups.flatMap((group) =>
+    group.items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  ),
 };
 ---
 
-<div class="faq-accordion-component" data-faq-root>
-  <!-- Schema.org JSON-LD Microdata for Search Engines -->
+<div class="faq-accordion-component">
   <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 
-  <!-- Top Filter & Search Controls Bar -->
-  <div class="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200/90 mb-8">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <!-- Search Input -->
-      {showSearch && (
-        <div class="relative flex-grow max-w-md">
-          <input
-            type="search"
-            placeholder="Search questions (e.g. cloud, SLA, pricing, security)..."
-            data-faq-search
-            class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-            aria-label="Search frequently asked questions"
-          />
-          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
+  {groups.map((group) => (
+    <section class="mb-12 last:mb-0">
+      {group.heading && (
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight border-b border-slate-100 pb-2 mb-6">{group.heading}</h2>
       )}
-
-      <!-- Global Controls: Expand / Collapse All -->
-      <div class="flex items-center gap-2 self-end md:self-auto">
-        <button
-          type="button"
-          data-faq-expand-all
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 transition shadow-sm"
-        >
-          Expand All
-        </button>
-        <button
-          type="button"
-          data-faq-collapse-all
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 transition shadow-sm"
-        >
-          Collapse All
-        </button>
+      <div class="space-y-4">
+        {group.items.map((item) => (
+          <details class="group bg-white rounded-2xl border border-slate-200/90 shadow-sm transition hover:border-blue-300 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 p-5 sm:p-6 cursor-pointer select-none list-none font-bold text-slate-900 text-base sm:text-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+              <span class="group-hover:text-blue-600 transition leading-snug">{item.question}</span>
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center transition" aria-hidden="true">
+                <svg class="w-4 h-4 transform group-open:rotate-180 transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </summary>
+            <div class="px-5 sm:px-6 pb-6 pt-1 text-slate-600 text-sm sm:text-base leading-relaxed border-t border-slate-100 bg-slate-50/40">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))}
       </div>
-    </div>
-
-    <!-- Category Filter Pills -->
-    <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-200/60" data-faq-categories>
-      {categories.map((cat) => {
-        const count = cat === 'All' ? items.length : items.filter((i) => i.category === cat).length;
-        const isActive = cat === initialCategory;
-        return (
-          <button
-            type="button"
-            data-category-filter={cat}
-            class:list={[
-              'px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center gap-1.5',
-              isActive
-                ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
-                : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-100 hover:text-slate-900',
-            ]}
-          >
-            <span>{cat}</span>
-            <span class:list={['px-1.5 py-0.2 rounded-full text-[10px]', isActive ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500']}>
-              {count}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  </div>
-
-  <!-- Accordion List -->
-  <div class="space-y-4" data-faq-list>
-    {items.map((item, idx) => (
-      <details
-        id={`faq-${item.id}`}
-        data-faq-item
-        data-category={item.category}
-        data-content={`${item.question} ${item.answer} ${item.category}`.toLowerCase()}
-        class="group bg-white rounded-2xl border border-slate-200/90 shadow-sm transition hover:border-blue-300 overflow-hidden"
-        open={idx === 0}
-      >
-        <summary class="flex items-center justify-between gap-4 p-5 sm:p-6 cursor-pointer select-none list-none font-bold text-slate-900 text-base sm:text-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
-          <div class="flex items-start gap-3">
-            <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 flex-shrink-0">
-              {item.category}
-            </span>
-            <span class="group-hover:text-blue-600 transition leading-snug">
-              {item.question}
-            </span>
-          </div>
-
-          <!-- Animated Chevron Icon -->
-          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center transition">
-            <svg
-              class="w-4 h-4 transform group-open:rotate-180 transition duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </summary>
-
-        <div class="px-5 sm:px-6 pb-6 pt-1 text-slate-600 text-sm sm:text-base leading-relaxed border-t border-slate-100 bg-slate-50/40">
-          <p>{item.answer}</p>
-        </div>
-      </details>
-    ))}
-  </div>
-
-  <!-- Empty Search Results State -->
-  <div class="hidden p-12 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300 mt-6" data-faq-empty>
-    <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    </div>
-    <h4 class="text-base font-bold text-slate-900 mb-1">No matching questions found</h4>
-    <p class="text-xs text-slate-500 mb-4 max-w-sm mx-auto">
-      We couldn't find any questions matching your keywords. Please try adjusting your search terms or view all categories.
-    </p>
-    <button
-      type="button"
-      data-faq-reset
-      class="px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition"
-    >
-      Reset Filters
-    </button>
-  </div>
-
-  <!-- Still Have Questions CTA Banner -->
-  <div class="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-6">
-    <div>
-      <span class="text-xs font-bold uppercase tracking-wider text-blue-300 block mb-1">Direct Support</span>
-      <h4 class="text-xl sm:text-2xl font-bold tracking-tight mb-2">Have a question not listed here?</h4>
-      <p class="text-sm text-blue-100 max-w-xl">
-        Speak directly with our solutions architects. We provide consultative assessments and clear operational answers.
-      </p>
-    </div>
-    <a
-      href="/contact"
-      class="flex-shrink-0 px-6 py-3 rounded-xl bg-white text-blue-900 font-bold text-sm hover:bg-blue-50 shadow-md transition transform hover:-translate-y-0.5"
-    >
-      Contact Our Team
-    </a>
-  </div>
+    </section>
+  ))}
 </div>
-
-<script>
-  function setupFaqAccordion() {
-    const root = document.querySelector('[data-faq-root]');
-    if (!root) return;
-
-    const searchInput = root.querySelector<HTMLInputElement>('[data-faq-search]');
-    const categoryButtons = root.querySelectorAll<HTMLButtonElement>('[data-category-filter]');
-    const faqItems = root.querySelectorAll<HTMLDetailsElement>('[data-faq-item]');
-    const expandAllBtn = root.querySelector<HTMLButtonElement>('[data-faq-expand-all]');
-    const collapseAllBtn = root.querySelector<HTMLButtonElement>('[data-faq-collapse-all]');
-    const emptyState = root.querySelector<HTMLElement>('[data-faq-empty]');
-    const resetBtn = root.querySelector<HTMLButtonElement>('[data-faq-reset]');
-
-    let activeCategory = 'All';
-    let searchQuery = '';
-
-    function applyFaqFilters() {
-      let visibleCount = 0;
-
-      faqItems.forEach((item) => {
-        const itemCat = item.getAttribute('data-category') || '';
-        const itemText = item.getAttribute('data-content') || '';
-
-        const matchesCat = activeCategory === 'All' || itemCat === activeCategory;
-        const matchesQuery = !searchQuery || itemText.includes(searchQuery);
-
-        if (matchesCat && matchesQuery) {
-          item.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          item.classList.add('hidden');
-        }
-      });
-
-      if (emptyState) {
-        emptyState.classList.toggle('hidden', visibleCount > 0);
-      }
-    }
-
-    categoryButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        activeCategory = btn.getAttribute('data-category-filter') || 'All';
-
-        categoryButtons.forEach((b) => {
-          b.classList.remove('bg-blue-600', 'text-white', 'shadow-sm', 'shadow-blue-600/30');
-          b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200/80');
-          const badge = b.querySelector('span:last-child');
-          if (badge) {
-            badge.classList.remove('bg-blue-500', 'text-white');
-            badge.classList.add('bg-slate-100', 'text-slate-500');
-          }
-        });
-
-        btn.classList.add('bg-blue-600', 'text-white', 'shadow-sm', 'shadow-blue-600/30');
-        btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200/80');
-        const activeBadge = btn.querySelector('span:last-child');
-        if (activeBadge) {
-          activeBadge.classList.add('bg-blue-500', 'text-white');
-          activeBadge.classList.remove('bg-slate-100', 'text-slate-500');
-        }
-
-        applyFaqFilters();
-      });
-    });
-
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
-        applyFaqFilters();
-      });
-    }
-
-    if (expandAllBtn) {
-      expandAllBtn.addEventListener('click', () => {
-        faqItems.forEach((item) => {
-          if (!item.classList.contains('hidden')) {
-            item.open = true;
-          }
-        });
-      });
-    }
-
-    if (collapseAllBtn) {
-      collapseAllBtn.addEventListener('click', () => {
-        faqItems.forEach((item) => {
-          item.open = false;
-        });
-      });
-    }
-
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        activeCategory = 'All';
-        searchQuery = '';
-        if (searchInput) searchInput.value = '';
-
-        categoryButtons.forEach((b) => {
-          const isAll = b.getAttribute('data-category-filter') === 'All';
-          b.classList.toggle('bg-blue-600', isAll);
-          b.classList.toggle('text-white', isAll);
-          b.classList.toggle('bg-white', !isAll);
-          b.classList.toggle('text-slate-600', !isAll);
-        });
-
-        applyFaqFilters();
-      });
-    }
-  }
-
-  setupFaqAccordion();
-  document.addEventListener('astro:page-load', setupFaqAccordion);
-</script>
-

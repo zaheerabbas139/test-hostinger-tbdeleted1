@@ -1,76 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
 
 const posts = await getCollection('blog', ({ data }) => !data.draft);
 posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
 <BaseLayout
-  title="Insights & Thought Leadership"
+  title="Blog"
   description="Expert guidance, technical deep dives, and practical insights on Microsoft Cloud, Cyber Security, and Digital Transformation."
 >
-  <div class="bg-gradient-to-b from-slate-900 to-blue-950 text-white py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-2xl">
-        <span class="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2 block">Thought Leadership</span>
-        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-          Insights & Technical Perspectives
-        </h1>
-        <p class="text-slate-300 text-lg leading-relaxed">
-          Actionable strategies and architectural guidance to help enterprise leaders navigate modern IT modernization, Zero Trust security, and cloud scalability.
-        </p>
-      </div>
-    </div>
-  </div>
+  <h1 class="sr-only">Blog</h1>
 
   <div class="py-16 bg-slate-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
-          <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-            <div>
-              <div class="aspect-video w-full overflow-hidden bg-slate-100 relative">
-                <img
-                  src={post.data.featured_image}
-                  alt={post.data.featured_image_alt || post.data.title}
-                  class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  onerror="this.onerror=null; this.src='/assets/images/Banner-03-1.png';"
-                />
-                <span class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-blue-700 shadow-sm">
-                  {post.data.category}
-                </span>
-              </div>
-              <div class="p-6">
-                <div class="text-xs text-slate-500 mb-2 flex items-center gap-2">
-                  <time datetime={post.data.date}>
-                    {new Date(post.data.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </time>
-                  <span>&bull;</span>
-                  <span>{post.data.author}</span>
-                </div>
-                <h2 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition leading-snug">
-                  <a href={`/blog/${post.id}/`}>
-                    {post.data.title}
-                  </a>
-                </h2>
-                <p class="text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                  {post.data.description}
-                </p>
-              </div>
-            </div>
-            <div class="px-6 pb-6 pt-2">
-              <a
-                href={`/blog/${post.id}/`}
-                class="text-sm font-semibold text-blue-600 group-hover:text-blue-700 inline-flex items-center gap-1 group-hover:gap-2 transition"
-              >
-                Read Article <span>&rarr;</span>
-              </a>
-            </div>
-          </article>
+          <BlogCard post={post} showAuthor />
         ))}
       </div>
     </div>
   </div>
 </BaseLayout>
-

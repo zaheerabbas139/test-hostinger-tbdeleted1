@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -15,7 +16,7 @@ const {
   image = '/assets/images/Banner-03-1.png',
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://uat.pranast.com');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://pranast.com');
 const formattedTitle = title === 'Home' ? 'Prana Solutions Tech | Trusted Microsoft Solutions Partner' : `${title} | Prana Solutions Tech`;
 ---
 
@@ -93,6 +94,7 @@ const formattedTitle = title === 'Home' ? 'Prana Solutions Tech | Trusted Micros
       <slot />
     </main>
     <Footer />
+    <CookieConsent />
   </body>
 </html>
 

@@ -4,11 +4,10 @@ description: "We are a premier Microsoft Solutions Partner dedicated to deliveri
 slug: "who-we-are"
 date: "2026-02-19"
 modified: "2026-02-19"
-featured_image: ""
+featured_image: "/assets/images/photo-1504868584819-f8e8b4b6d7e3-scaled-1.jpg"
 ---
 
-#
-Empowering Business Through Technology
+## Empowering Business Through Technology
 
 We are a premier Microsoft Solutions Partner dedicated to delivering innovative, secure, and scalable IT strategies that drive growth for enterprises.
 
@@ -16,7 +15,7 @@ We are a premier Microsoft Solutions Partner dedicated to delivering innovative,
 
 ## Driving Digital Excellence
 
-![Prana Solutions Tech Logo](/assets/images/prana-solutions-logo.png)
+![Prana Solutions Tech Logo](/assets/images/prana-Logo.png)
 
 At Prana Solutions, our mission is to empower organisations to achieve their full potential through reliable, secure, and innovative technology. Established with a vision to bring enterprise-grade IT capabilities to forward-thinking businesses, we believe that technology should be a strategic enabler, not a barrier.
 
@@ -28,23 +27,19 @@ Based in London with a nationwide reach, we have helped hundreds of companies na
 
 The fundamental principles that guide our service delivery and client relationships
 
-###
-Excellence in Delivery
+### Excellence in Delivery
 
 We uphold the highest  enterprise standards in every project, delivering robust solutions that exceed expectations and drive measurable business value.
 
-###
-Client Partnership
+### Client Partnership
 
 Your success is our priority. We build lasting partnerships through transparent communication, dedicated support, and personalised service.
 
-###
-Strategic Innovation
+### Strategic Innovation
 
 We embrace cutting-edge Microsoft technologies to solve complex business challenges, helping you stay ahead in a competitive market.
 
-###
-Integrity & Trust
+### Integrity & Trust
 
 We maintain stringent security and compliance standards (ISO 27001), earning your trust through reliability and professional conduct.
 
@@ -63,22 +58,18 @@ Our team of certified professionals brings together decades of combined experien
 
 ![](/assets/images/pexels-yankrukov-7691691-scaled-1-1024x1024.jpg)
 
-###
-10+
+### 10+
 
 Years Experience
 
-###
-100+
+### 100+
 
 Clients
 
-###
-99.9%
+### 99.9%
 
 Uptime SLA
 
-###
-24/7
+### 24/7
 
 Support

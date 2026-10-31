@@ -7,7 +7,7 @@ modified: "2026-03-24"
 category: "Digital Transformation"
 featured_image: "/assets/images/IT-Services.jpg"
 featured_image_alt: "The Power of Microsoft Power Platform"
-author: "Prana Solutions Tech"
+author: "Manasa Nadaduru"
 draft: false
 ---
 

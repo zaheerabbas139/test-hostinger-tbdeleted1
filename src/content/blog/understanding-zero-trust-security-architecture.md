@@ -7,7 +7,7 @@ modified: "2026-03-24"
 category: "Cyber Security"
 featured_image: "/assets/images/Cyber-Security-2.jpg"
 featured_image_alt: "Cyber-Security (2)"
-author: "Prana Solutions Tech"
+author: "Satish Kumar Balasundaram"
 draft: false
 ---
 

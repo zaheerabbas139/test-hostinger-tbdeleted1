@@ -11,7 +11,7 @@ featured_image: ""
 
 Comprehensive managed IT solutions with proactive monitoring, expert support, and strategic guidance to keep your business running smoothly around the clock.
 
-[Get In Touch](https://dev.uat.pranast.com/contact/)
+[Get In Touch](/contact/)
 
 ## Your Complete IT Support Partner
 
@@ -82,22 +82,18 @@ Business continuity planning and disaster recovery solutions to minimize downtim
 - Scalable solutions that grow with your business
 - Focus on core business while we handle your IT
 
-###
-< 15 min
+### < 15 min
 
 Response Time
 
-###
-99.9%
+### 99.9%
 
 Uptime SLA
 
-###
-24/7
+### 24/7
 
 Monitoring
 
-###
-100%
+### 100%
 
 Compliance

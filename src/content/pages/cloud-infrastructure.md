@@ -11,7 +11,7 @@ featured_image: ""
 
 Transform your business with scalable cloud infrastructure, Microsoft 365 productivity tools, and secure hybrid solutions designed for the modern enterprise.
 
-[Get In Touch](https://dev.uat.pranast.com/contact/)
+[Get In Touch](/contact/)
 
 ## Modernize Your Infrastructure
 

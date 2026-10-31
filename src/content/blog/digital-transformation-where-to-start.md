@@ -7,7 +7,7 @@ modified: "2026-03-24"
 category: "Digital Transformation"
 featured_image: "/assets/images/Digital-Transformation-Blog.png"
 featured_image_alt: "Digital Transformation Blog"
-author: "Prana Solutions Tech"
+author: "Manasa Nadaduru"
 draft: false
 ---
 

@@ -1,0 +1,80 @@
+<!-- Cookie consent banner (UK GDPR / PECR). Copy matches the Cookies Policy on pranast.com. -->
+<div id="cookie-consent" class="hidden fixed bottom-0 inset-x-0 z-[60] bg-white border-t border-slate-200 shadow-2xl" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div class="max-w-3xl">
+        <p id="cookie-consent-title" class="font-semibold text-slate-900 text-sm mb-1">Manage consent</p>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          This Cookies Policy explains how Prana Solutions Tech Limited uses cookies on https://pranast.com/.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" data-cookie-accept class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition">Accept</button>
+        <button type="button" data-cookie-deny class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Deny</button>
+        <button type="button" data-cookie-preferences class="px-4 py-2 rounded-lg text-sm font-medium text-blue-600 hover:text-blue-800 transition" aria-expanded="false" aria-controls="cookie-preferences">View preferences</button>
+      </div>
+    </div>
+
+    <div id="cookie-preferences" class="hidden mt-5 pt-5 border-t border-slate-200 max-h-80 overflow-y-auto text-sm text-slate-600 space-y-3">
+      <h2 class="text-base font-bold text-slate-900">COOKIES POLICY</h2>
+      <p>This Cookies Policy explains how Prana Solutions Tech Limited uses cookies on https://pranast.com/ .</p>
+      <p>This policy is provided for general information purposes only and does not constitute legal advice.</p>
+      <h3 class="font-semibold text-slate-900">1. What Are Cookies?</h3>
+      <p>Cookies are small text files stored on your device to enable website functionality and improve user experience.</p>
+      <h3 class="font-semibold text-slate-900">2. Types of Cookies We Use</h3>
+      <ul class="list-disc list-inside space-y-1">
+        <li>Essential cookies are required for website operation.</li>
+        <li>Analytics cookies help us understand website usage.</li>
+        <li>Functional cookies remember preferences.</li>
+        <li>Marketing cookies are used only with consent.</li>
+      </ul>
+      <h3 class="font-semibold text-slate-900">Cookie Consent</h3>
+      <p>Always active. Non-essential cookies are used only after consent is provided.</p>
+      <h3 class="font-semibold text-slate-900">Preferences</h3>
+      <p>The technical storage or access is necessary for the legitimate purpose of storing preferences that are not requested by the subscriber or user.</p>
+      <h3 class="font-semibold text-slate-900">Statistics</h3>
+      <p>The technical storage or access that is used exclusively for anonymous statistical purposes. Without a subpoena, voluntary compliance on the part of your Internet Service Provider, or additional records from a third party, information stored or retrieved for this purpose alone cannot usually be used to identify you.</p>
+      <h3 class="font-semibold text-slate-900">Third-Party Cookies</h3>
+      <p>Some cookies may be placed by third-party services such as analytics providers.</p>
+      <p>Email: info@pranast.com</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'pranast-cookie-consent';
+  const banner = document.getElementById('cookie-consent');
+  const preferences = document.getElementById('cookie-preferences');
+  const prefsBtn = banner?.querySelector<HTMLButtonElement>('[data-cookie-preferences]');
+
+  function readConsent(): string | null {
+    try {
+      return window.localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  function saveConsent(value: 'accepted' | 'denied') {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      // Storage blocked (private mode or site data cleared): the banner is still dismissed for this page view.
+    }
+    banner?.classList.add('hidden');
+    window.dispatchEvent(new CustomEvent('cookie-consent', { detail: { value } }));
+  }
+
+  if (banner && readConsent() === null) {
+    banner.classList.remove('hidden');
+  }
+
+  banner?.querySelector('[data-cookie-accept]')?.addEventListener('click', () => saveConsent('accepted'));
+  banner?.querySelector('[data-cookie-deny]')?.addEventListener('click', () => saveConsent('denied'));
+
+  prefsBtn?.addEventListener('click', () => {
+    if (!preferences) return;
+    const open = preferences.classList.toggle('hidden') === false;
+    prefsBtn.setAttribute('aria-expanded', String(open));
+  });
+</script>

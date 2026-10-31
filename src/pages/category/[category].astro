@@ -1,0 +1,37 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+
+type Category = CollectionEntry<'blog'>['data']['category'];
+
+export function getStaticPaths() {
+  const categories: Category[] = ['Digital Transformation', 'Cyber Security'];
+  return categories.map((category) => ({
+    params: { category: category.toLowerCase().replace(/\s+/g, '-') },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const posts = await getCollection('blog', ({ data }) => !data.draft && data.category === category);
+posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout title={category} description={`${category} articles from Prana Solutions Tech.`}>
+  <div class="bg-gradient-to-b from-slate-900 to-blue-950 text-white py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">{category}</h1>
+    </div>
+  </div>
+
+  <div class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => (
+          <BlogCard post={post} showAuthor />
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

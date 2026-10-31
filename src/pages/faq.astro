@@ -1,31 +1,83 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FaqAccordion from '../components/FaqAccordion.astro';
+import FaqAccordion, { type FaqGroup } from '../components/FaqAccordion.astro';
 
-const supportPillars = [
+// Copy matches pranast.com's FAQ exactly, including the "TechPro Solutions" wording in the first question.
+const faqGroups: FaqGroup[] = [
   {
-    title: 'Cloud Infrastructure',
-    desc: 'Azure architecture, CAF landing zones, and cloud migration.',
-    href: '/cloud-infrastructure',
-    icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z',
+    heading: 'General',
+    items: [
+      {
+        question: 'What services does TechPro Solutions offer?',
+        answer:
+          'We offer comprehensive IT services including managed IT support, cloud solutions (Azure, Microsoft 365), cybersecurity, digital transformation with Dynamics 365 and Power Platform, and infrastructure management.',
+      },
+      {
+        question: 'Do you support businesses of all sizes?',
+        answer:
+          'Yes, we work with small and medium businesses, large enterprises, and everything in between. Our solutions are scalable and tailored to meet the specific needs of your organization.',
+      },
+    ],
   },
   {
-    title: 'Cyber Security',
-    desc: 'Zero Trust security, Defender suite, Sentinel, and compliance.',
-    href: '/cyber-security',
-    icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    heading: 'Cloud Solutions',
+    items: [
+      {
+        question: 'Can you help migrate our on-premises infrastructure to the cloud?',
+        answer:
+          'Yes, we specialize in cloud migration services using Microsoft Azure. We assess your current environment, design a migration strategy, and execute the migration with minimal disruption to your operations.',
+      },
+      {
+        question: 'What are the benefits of moving to Microsoft 365?',
+        answer:
+          'Microsoft 365 provides enterprise-grade productivity tools, advanced security features, anywhere access, automatic updates, scalability, and reduced IT management overhead.',
+      },
+    ],
   },
   {
-    title: 'Managed IT Services',
-    desc: '24/7 proactive monitoring, helpdesk, patching, and SLA guarantees.',
-    href: '/it-support-managed-services',
-    icon: 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z',
+    heading: 'Pricing & Contracts',
+    items: [
+      {
+        question: 'How is pricing structured?',
+        answer:
+          'We offer flexible pricing models including monthly managed services contracts, project-based pricing, and hybrid arrangements. Contact us for a customized quote based on your specific needs.',
+      },
+      {
+        question: 'What is the typical contract length?',
+        answer:
+          'We typically offer 12-month contracts for managed services, but we can accommodate different terms based on your business requirements.',
+      },
+    ],
   },
   {
-    title: 'Digital Transformation',
-    desc: 'Dynamics 365, Power Platform automation, and workflow modernization.',
-    href: '/digital-transformation',
-    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    heading: 'Managed IT Services',
+    items: [
+      {
+        question: 'What is included in managed IT services?',
+        answer:
+          'Our managed IT services include 24/7 monitoring, helpdesk support, patch management, backup and disaster recovery, endpoint management, security monitoring, and proactive maintenance.',
+      },
+      {
+        question: 'What is your response time for support requests?',
+        answer:
+          'We guarantee a response time of less than 15 minutes for critical issues and less than 2 hours for standard support requests. Our support team is available 24/7/365.',
+      },
+    ],
+  },
+  {
+    heading: 'Security',
+    items: [
+      {
+        question: 'How do you protect against cyber threats?',
+        answer:
+          'We use a multi-layered security approach including Microsoft Security Stack (Defender, Sentinel, Intune), regular security assessments, employee training, security monitoring, and incident response capabilities.',
+      },
+      {
+        question: 'Do you provide compliance support?',
+        answer:
+          'Yes, we help organizations meet various compliance requirements including GDPR, HIPAA, ISO 27001, and industry-specific regulations through proper security controls and documentation.',
+      },
+    ],
   },
 ];
 ---
@@ -35,68 +87,24 @@ const supportPillars = [
   description="Explore answers to common questions about Prana Solutions Tech's managed IT support, Microsoft cloud architecture, cyber security, contracts, and SLA response times."
 >
   <!-- Page Hero Header -->
-  <header class="bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 text-white py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="max-w-3xl mx-auto">
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-4">
-          Knowledge Base & Support Hub
-        </span>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-          Frequently Asked Questions
-        </h1>
-        <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
-          Clear, direct answers regarding our Microsoft enterprise services, cloud migration strategies, cyber security standards, contracts, and 24/7 SLA commitments.
-        </p>
-      </div>
+  <header
+    class="relative bg-cover bg-center text-white py-16 lg:py-24"
+    style="background-image: url('/assets/images/Screenshot-2026-01-29-180248.png');"
+  >
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-900/95 via-blue-950/90 to-slate-900/95"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+        Frequently Asked Questions
+      </h1>
     </div>
   </header>
 
-  <!-- Main FAQ Section with Accordion -->
   <section class="py-16 bg-white">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <FaqAccordion />
-    </div>
-  </section>
-
-  <!-- Service Pillars Quick Links -->
-  <section class="py-16 bg-slate-50 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <span class="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2 block">Enterprise Capabilities</span>
-        <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Explore Our Core Service Pillars
-        </h3>
-        <p class="text-slate-600 text-sm mt-2">
-          Dive deeper into our technical capabilities and enterprise architectural solutions.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {supportPillars.map((pillar) => (
-          <a
-            href={pillar.href}
-            class="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-300 transition group flex flex-col justify-between"
-          >
-            <div>
-              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={pillar.icon} />
-                </svg>
-              </div>
-              <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition">
-                {pillar.title}
-              </h4>
-              <p class="text-xs text-slate-600 leading-relaxed mb-4">
-                {pillar.desc}
-              </p>
-            </div>
-            <span class="text-xs font-semibold text-blue-600 inline-flex items-center gap-1 group-hover:gap-1.5 transition">
-              Learn more &rarr;
-            </span>
-          </a>
-        ))}
-      </div>
+      <p class="text-slate-600 text-base sm:text-lg leading-relaxed mb-12">
+        Get answers to common questions about our services, processes, and how we can help your business.
+      </p>
+      <FaqAccordion groups={faqGroups} />
     </div>
   </section>
 </BaseLayout>
-

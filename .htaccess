@@ -10,6 +10,18 @@ DirectoryIndex index.html
   RewriteEngine On
   RewriteBase /
 
+  # Legacy pranast.com URLs that are still indexed (301 permanent redirects)
+  RewriteRule ^digital-transformation-where-to-start/?$ /blog/digital-transformation-where-to-start/ [R=301,L]
+  RewriteRule ^the-power-of-microsoft-power-platform/?$ /blog/the-power-of-microsoft-power-platform/ [R=301,L]
+  RewriteRule ^understanding-zero-trust-security-architecture/?$ /blog/understanding-zero-trust-security-architecture/ [R=301,L]
+  RewriteRule ^google-sheets-vs-dynamics-365/?$ /blog/google-sheets-vs-dynamics-365/ [R=301,L]
+  RewriteRule ^why-digital-transformation-projects-fail/?$ /blog/why-digital-transformation-projects-fail/ [R=301,L]
+  RewriteRule ^the-hidden-security-risks-of-rapid-digital-transformation/?$ /blog/the-hidden-security-risks-of-rapid-digital-transformation/ [R=301,L]
+  RewriteRule ^(globaltech-solutions|premier-law-associates)/?$ /case-studies/$1/ [R=301,L]
+  RewriteRule ^terms-of-services/?$ /terms-of-service/ [R=301,L]
+  RewriteRule ^(home|services|insights)/?$ / [R=301,L]
+  RewriteRule ^author/ /blog/ [R=301,L]
+
   # Redirect trailing slash to non-trailing slash (optional, canonicalization)
   # RewriteCond %{REQUEST_FILENAME} !-d
   # RewriteRule ^(.*)/$ /$1 [L,R=301]
