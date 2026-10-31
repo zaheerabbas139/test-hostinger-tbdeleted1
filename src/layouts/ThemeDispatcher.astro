@@ -1,0 +1,69 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import type { Author } from '../data/authors';
+import BaseLayout from './BaseLayout.astro';
+import { resolveTheme, type ThemeId } from '../config/theme';
+import ClassicTheme from '../themes/ClassicTheme.astro';
+import EditorialTheme from '../themes/EditorialTheme.astro';
+import ModernTheme from '../themes/ModernTheme.astro';
+
+interface Props {
+  theme?: ThemeId;
+  post: CollectionEntry<'blog'>;
+  headings?: MarkdownHeading[];
+  author: Author;
+  formattedDate: string;
+  previousPost?: CollectionEntry<'blog'>;
+  nextPost?: CollectionEntry<'blog'>;
+  relatedPosts?: CollectionEntry<'blog'>[];
+}
+
+const {
+  theme: explicitTheme,
+  post,
+  headings = [],
+  author,
+  formattedDate,
+  previousPost,
+  nextPost,
+  relatedPosts = [],
+} = Astro.props;
+
+// Strategy A + B + C resolution:
+// 1. Explicit prop override (if provided)
+// 2. URL parameter override (?theme=<name>)
+// 3. Central configuration ACTIVE_THEME (with fallback to DEFAULT_THEME 'classic')
+const activeTheme: ThemeId = explicitTheme || resolveTheme(Astro.url);
+
+const themeProps = {
+  post,
+  headings,
+  author,
+  formattedDate,
+  previousPost,
+  nextPost,
+  relatedPosts,
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.featured_image}
+>
+  {activeTheme === 'editorial' ? (
+    <EditorialTheme {...themeProps}>
+      <slot />
+    </EditorialTheme>
+  ) : activeTheme === 'modern-saas' ? (
+    <ModernTheme {...themeProps}>
+      <slot />
+    </ModernTheme>
+  ) : (
+    <ClassicTheme {...themeProps}>
+      <slot />
+    </ClassicTheme>
+  )}
+</BaseLayout>
+

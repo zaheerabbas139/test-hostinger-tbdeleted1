@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import BlogCard from '../../components/BlogCard.astro';
+import ThemeDispatcher from '../../layouts/ThemeDispatcher.astro';
 import { getAuthor } from '../../data/authors';
 
 export async function getStaticPaths() {
@@ -13,7 +12,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
@@ -30,73 +29,15 @@ const author = getAuthor(post.data.author);
 const formattedDate = new Date(post.data.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
-<BaseLayout
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.featured_image}
+<ThemeDispatcher
+  post={post}
+  headings={headings}
+  author={author}
+  formattedDate={formattedDate}
+  previousPost={previousPost}
+  nextPost={nextPost}
+  relatedPosts={relatedPosts}
 >
-  <article class="py-16 bg-white">
-    <!-- Post Header -->
-    <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
-          {post.data.category}
-        </span>
-        <time class="text-xs text-slate-500" datetime={post.data.date}>{formattedDate}</time>
-      </div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-        {post.data.title}
-      </h1>
-    </header>
+  <Content />
+</ThemeDispatcher>
 
-    <!-- Post Content -->
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="prose max-w-none">
-        <Content />
-      </div>
-    </div>
-
-    <!-- Author box -->
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-10 border-t border-slate-200">
-      <p class="text-sm font-semibold text-slate-900 mb-4">Author: {author.name}</p>
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <img src={author.avatar} alt={author.name} width="96" height="96" class="w-24 h-24 rounded-full object-cover flex-shrink-0" loading="lazy" decoding="async" />
-        <div>
-          <p class="text-sm text-slate-600 leading-relaxed mb-3">{author.bio}</p>
-          <a href="/blog/" class="text-sm font-semibold text-blue-600 hover:text-blue-800">View all posts by {author.name} &gt;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Posts navigation -->
-    {(previousPost || nextPost) && (
-      <nav class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-10 border-t border-slate-200" aria-labelledby="posts-navigation">
-        <h2 id="posts-navigation" class="text-lg font-bold text-slate-900 mb-4">Posts navigation</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-          <div>
-            {previousPost && (
-              <a href={`/blog/${previousPost.id}/`} class="text-blue-600 hover:text-blue-800">&lt; {previousPost.data.title}</a>
-            )}
-          </div>
-          <div class="sm:text-right">
-            {nextPost && (
-              <a href={`/blog/${nextPost.id}/`} class="text-blue-600 hover:text-blue-800">{nextPost.data.title} &gt;</a>
-            )}
-          </div>
-        </div>
-      </nav>
-    )}
-
-    <!-- Related posts -->
-    {relatedPosts.length > 0 && (
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-10 border-t border-slate-200" aria-labelledby="related-posts">
-        <h2 id="related-posts" class="text-2xl font-bold text-slate-900 mb-8">Related Posts</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {relatedPosts.map((related) => (
-            <BlogCard post={related} showExcerpt={false} />
-          ))}
-        </div>
-      </section>
-    )}
-  </article>
-</BaseLayout>
