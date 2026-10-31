@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   deploy:
@@ -63,8 +63,12 @@ jobs:
 
       - name: Check for Hostinger Deployment Secrets
         id: check-secrets
+        env:
+          FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
         run: |
-          if [ -z "${{ secrets.HOSTINGER_FTP_SERVER }}" ] || [ -z "${{ secrets.HOSTINGER_FTP_USERNAME }}" ] || [ -z "${{ secrets.HOSTINGER_FTP_PASSWORD }}" ]; then
+          if [ -z "$FTP_SERVER" ] || [ -z "$FTP_USERNAME" ] || [ -z "$FTP_PASSWORD" ]; then
             echo "has_secrets=false" >> $GITHUB_OUTPUT
             echo "### ⚠️ Deployment Secrets Missing" >> $GITHUB_STEP_SUMMARY
             echo "The build completed successfully, but deployment was skipped because Hostinger FTP secrets are not yet configured." >> $GITHUB_STEP_SUMMARY
