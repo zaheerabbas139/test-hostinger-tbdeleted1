@@ -50,7 +50,7 @@ posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).get
                   <span>{post.data.author}</span>
                 </div>
                 <h2 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition leading-snug">
-                  <a href={`/blog/${post.slug}/`}>
+                  <a href={`/blog/${post.id}/`}>
                     {post.data.title}
                   </a>
                 </h2>
@@ -61,7 +61,7 @@ posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).get
             </div>
             <div class="px-6 pb-6 pt-2">
               <a
-                href={`/blog/${post.slug}/`}
+                href={`/blog/${post.id}/`}
                 class="text-sm font-semibold text-blue-600 group-hover:text-blue-700 inline-flex items-center gap-1 group-hover:gap-2 transition"
               >
                 Read Article <span>&rarr;</span>

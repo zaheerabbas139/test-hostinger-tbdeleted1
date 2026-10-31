@@ -1,10 +1,10 @@
 ---
-import { getEntry } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 
 const homeEntry = await getEntry('pages', 'home');
-const { Content } = homeEntry ? await homeEntry.render() : { Content: null };
+const { Content } = homeEntry ? await render(homeEntry) : { Content: null };
 
 const serviceHighlights = [
   {

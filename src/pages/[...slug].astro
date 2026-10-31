@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 
@@ -7,17 +7,17 @@ export async function getStaticPaths() {
   const pages = await getCollection('pages');
   // Exclude routes with dedicated first-class templates
   const dedicatedRoutes = new Set(['home', 'case-studies', 'bridgead', 'faq']);
-  const filteredPages = pages.filter((p) => !dedicatedRoutes.has(p.slug));
+  const filteredPages = pages.filter((p) => !dedicatedRoutes.has(p.id));
 
   return filteredPages.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
-const isContactPage = entry.slug === 'contact';
+const { Content } = await render(entry);
+const isContactPage = entry.id === 'contact';
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>

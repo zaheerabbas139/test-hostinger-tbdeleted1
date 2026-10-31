@@ -1,11 +1,16 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+// Keep the legacy slugs: frontmatter `slug` if set, otherwise the file name.
+const generateSlugId = ({ data, entry }: { data: Record<string, unknown>; entry: string }) =>
+  (data.slug as string | undefined) ?? entry.replace(/\.md$/, '');
 
 /**
  * Standard Static Pages Schema
  * Used for Home, About, Services, BridgeAD, FAQ, Contact, Legal
  */
 const pagesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/pages', generateId: generateSlugId }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -22,7 +27,7 @@ const pagesCollection = defineCollection({
  * Used for technical articles and thought leadership
  */
 const blogCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog', generateId: generateSlugId }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -42,7 +47,7 @@ const blogCollection = defineCollection({
  * Used for in-depth client outcomes and enterprise engagements
  */
 const caseStudiesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/case-studies', generateId: generateSlugId }),
   schema: z.object({
     title: z.string(),
     client: z.string(),
