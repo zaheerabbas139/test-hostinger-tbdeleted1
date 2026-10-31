@@ -1,5 +1,8 @@
 # Tech Stack Analysis: uat.pranast.com
 
+> **Navigation:** [Documentation Hub](../README.md) &rsaquo; [Architecture](../README.md#1-architecture) &rsaquo; **Current Tech Stack Analysis**  
+> **Related Document:** [WordPress to Astro Migration Blueprint](wordpress-to-astro-migration-plan.md)
+
 This document details the complete technology stack used to develop, power, and host **uat.pranast.com**, based on live HTTP/REST API inspection and Hostinger hosting configurations.
 
 ---

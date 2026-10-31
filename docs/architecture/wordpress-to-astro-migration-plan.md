@@ -1,5 +1,8 @@
 # Architecture Plan: Decommissioning WordPress & Migrating to Astro + Markdown
 
+> **Navigation:** [Documentation Hub](../README.md) &rsaquo; [Architecture](../README.md#1-architecture) &rsaquo; **Target-State Modernization Blueprint**  
+> **Related Document:** [As-Is Tech Stack Analysis](uat-pranast-tech-stack.md)
+
 **Author:** Solutions Architecture Team (20+ Years Enterprise Web & CMS Engineering)  
 **Target Domain:** `uat.pranast.com` / `pranast.com`  
 **Current Architecture:** WordPress 6.x (PHP 8.5 + MySQL/MariaDB + Elementor + LiteSpeed Cache)  

@@ -1,5 +1,8 @@
 # Business to Unlimited Hosting Migration Plan
 
+> **Navigation:** [Documentation Hub](../README.md) &rsaquo; [Infrastructure](../README.md#2-infrastructure--operations) &rsaquo; **Hosting Plan Migration Plan**  
+> **Related Document:** [Cross-Account Hostinger Migration Runbook](hostinger-website-migration.md)
+
 **Prepared:** October 31, 2026  
 **Source plan:** Business Web Hosting, `pranast.com`  
 **Destination plan:** Unlimited Web Hosting, `deeppink-eland-272195.hostingersite.com`
