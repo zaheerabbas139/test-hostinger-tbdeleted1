@@ -153,3 +153,6 @@ src/
 * **Component Encapsulation**: Keep theme-specific components inside `src/themes/` or `src/components/themes/` to avoid polluting the core component catalog.
 * **Clean Decommissioning**: When a single theme is permanently selected for production, unused themes can either be retained for future testing or archived cleanly without breaking any routes.
 
+## The Combined Architecture: How It Works
+
+![alt text](combined_architecture.png)
