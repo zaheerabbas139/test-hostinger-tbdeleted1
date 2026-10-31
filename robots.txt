@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://pranast.com/sitemap-index.xml
