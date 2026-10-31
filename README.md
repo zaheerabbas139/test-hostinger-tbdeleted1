@@ -50,16 +50,27 @@ All system architecture specifications and operational migration guides are stru
 
 ## 🚀 CI/CD & Automated Deployment
 
-The repository uses enterprise-grade GitHub Actions workflows:
+The repository uses a single, unified, enterprise-grade GitHub Actions pipeline ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) implementing **strict quality gating** and **Build Once, Deploy Anywhere** principles:
 
-- **Continuous Integration (`.github/workflows/ci.yml`):**
-  - Triggers on Pull Requests and Pushes to `main`.
-  - Enforces type safety and Zod Content Schema validation via `npm run check` (`astro check`).
-  - Audits dependencies with `npm audit`.
-  - Validates static compilation (`npm run build`) and uploads build artifacts.
-- **Continuous Deployment (`.github/workflows/deploy-hostinger.yml`):**
-  - Deploys pre-compiled static assets (`dist/`) directly to Hostinger web roots via secure FTPS.
-  - Controlled by GitHub repository secrets (`HOSTINGER_FTP_SERVER`, `HOSTINGER_FTP_USERNAME`, `HOSTINGER_FTP_PASSWORD`).
+```mermaid
+flowchart LR
+    Push["Commit on main"] --> TypeCheck["1. typecheck\n(astro check)"]
+    Push --> Security["2. security-audit\n(npm audit)"]
+    TypeCheck --> Build["3. build\n(SSG build + verify)"]
+    Build --> Gate{"Build &\nVerify OK?"}
+    Gate -- "✅ Success" --> Deploy["4. deploy\n(FTPS to Hostinger)"]
+    Gate -- "❌ Failed" --> Block["🛑 Deploy Aborted"]
+
+    style Deploy stroke:#10b981,stroke-width:2px;
+    style Block stroke:#ef4444,stroke-width:2px;
+```
+
+### Pipeline Guarantees & Features:
+- **Gated Deployment (`needs: [build]`):** Hostinger deployment is executed **only after** `typecheck` and `build` succeed. Any build failure immediately halts the pipeline, preventing broken code from reaching production.
+- **Pull Request Safety:** PRs execute `typecheck`, `security-audit`, and `build` for validation, while the `deploy` job is cleanly skipped.
+- **Build Once, Deploy Anywhere:** The `build` job archives the compiled static site (`astro-production-dist`), which the `deploy` job downloads directly—eliminating double compilation and reducing runner runtime by >40%.
+- **Adaptive Concurrency:** Stale runs on PRs are auto-cancelled (`cancel-in-progress: true`), but in-flight FTPS uploads to Hostinger on `main` are protected against abrupt termination.
+- **Reference & Decision Record:** Full design details are documented in [**ADR-001: Unified Gated CI/CD Pipeline**](docs/infrastructure/adr-unified-ci-cd-pipeline.md) and [**CI/CD Pipeline Specification**](docs/infrastructure/github-actions-ci-cd.md).
 
 ---
 

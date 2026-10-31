@@ -1,4 +1,4 @@
-name: CI (Build & Validate)
+name: CI/CD Pipeline (Validate, Build & Deploy)
 
 on:
   push:
@@ -8,15 +8,25 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      target_dir:
+        description: 'Hostinger remote destination folder (relative to FTP root)'
+        required: false
+        default: 'public_html/'
+      dry_run:
+        description: 'Simulate deployment without modifying remote files'
+        required: false
+        default: false
+        type: boolean
 
 # Ensure minimal permissions following least-privilege security principle
 permissions:
   contents: read
 
-# Cancel redundant in-progress runs on same branch or pull request
+# Cancel redundant in-progress runs on PRs, but prevent cancelling in-flight deployments on main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   NODE_VERSION: 'latest'
@@ -97,3 +107,64 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+  deploy:
+    name: Deploy to Hostinger (FTPS)
+    needs: [build]
+    # Gated: Only run on main branch commits/pushes or manual triggers, NEVER on PRs, and ONLY if build succeeded
+    if: (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://uat.pranast.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download compiled build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: astro-production-dist
+          path: dist
+
+      - name: Verify downloaded deployment bundle
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "::error::Deployment package incomplete! dist/index.html not found."
+            exit 1
+          fi
+          echo "Deployment bundle ready: dist/ contains $(find dist -type f | wc -l) files."
+
+      - name: Check for Hostinger Deployment Secrets
+        id: check-secrets
+        env:
+          FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+        run: |
+          if [ -z "$FTP_SERVER" ] || [ -z "$FTP_USERNAME" ] || [ -z "$FTP_PASSWORD" ]; then
+            echo "has_secrets=false" >> $GITHUB_OUTPUT
+            echo "### ⚠️ Deployment Secrets Missing" >> $GITHUB_STEP_SUMMARY
+            echo "The CI build and validation succeeded, but deployment was skipped because Hostinger FTP secrets are not configured in GitHub repository settings." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**To enable automated deployment, configure these Repository Secrets:**" >> $GITHUB_STEP_SUMMARY
+            echo "1. \`HOSTINGER_FTP_SERVER\` (e.g. \`ftp.pranast.com\` or server IP)" >> $GITHUB_STEP_SUMMARY
+            echo "2. \`HOSTINGER_FTP_USERNAME\` (e.g. \`u715171369@pranast.com\` or FTP account name)" >> $GITHUB_STEP_SUMMARY
+            echo "3. \`HOSTINGER_FTP_PASSWORD\` (FTP account password created in Hostinger hPanel)" >> $GITHUB_STEP_SUMMARY
+            echo "4. \`HOSTINGER_TARGET_DIR\` (Optional, defaults to \`public_html/\`)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_secrets=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Synchronize Static Files to Hostinger (FTPS)
+        if: steps.check-secrets.outputs.has_secrets == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./dist/
+          server-dir: ${{ github.event.inputs.target_dir || secrets.HOSTINGER_TARGET_DIR || 'public_html/' }}
+          dry-run: ${{ github.event.inputs.dry_run || false }}
+          dangerous-clean-slate: false
