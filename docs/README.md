@@ -15,6 +15,7 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 | **Architecture** | [Phase 3: UI Polish & Custom Components](architecture/phase-3-ui-polish-components-report.md) | Frontend Engineers, UI/UX | Completed & Validated | Accessible WAI-ARIA tabs for BridgeAD showcase, 5-stage migration stepper, filterable capability matrix, and SEO FAQ accordion. |
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
+| **Infrastructure** | [GitHub Actions CI/CD Pipeline](infrastructure/github-actions-ci-cd.md) | DevOps, Frontend Engineers | Implemented & Production-Ready | Automated build, type-checking (`astro check`), security audit, and secure FTPS deployment to Hostinger. |
 
 ---
 
@@ -50,6 +51,7 @@ docs/
 │   └── wordpress-to-astro-migration-plan.md   # Target Astro + Markdown replatforming blueprint
 └── infrastructure/                            # Infrastructure runbooks, hosting tier & cutover procedures
     ├── business-to-unlimited-migration-plan.md# Internal Hostinger tier migration (Business -> Unlimited)
+    ├── github-actions-ci-cd.md                # Enterprise GitHub Actions CI/CD pipeline specification
     └── hostinger-website-migration.md         # Cross-account cutover plan (u715171369 -> u797343708)
 ```
 
@@ -88,4 +90,5 @@ docs/
 | **ADR-003** | Transition from WordPress/Elementor to Astro SSG | **Adopted** | Drastically reduces hosting footprint, eliminates continuous CVE patch churn, and maximizes Core Web Vitals. |
 | **ADR-004** | Direct XML Content Extraction & Root Scaffolding | **Adopted** | Offline-verifiable pipeline parsing WXR XML directly with zero-JS Astro 5 root architecture. |
 | **ADR-005** | Dedicated Bespoke Routes with Island-Based Progressive Enhancement | **Adopted** | Zero-dependency WAI-ARIA tabs and semantic HTML5 FAQ accordions with JSON-LD schema for high-conversion pages. |
+| **ADR-006** | Decoupled CI/CD Workflows with FTPS Hostinger Synchronization | **Adopted** | Strict PoLP permissions, cancel-in-progress CI, safe non-canceling CD, automated Astro schema validation, and zero-downtime deployment. |
 

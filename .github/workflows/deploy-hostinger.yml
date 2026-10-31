@@ -90,3 +90,4 @@ jobs:
           server-dir: ${{ github.event.inputs.target_dir || secrets.HOSTINGER_TARGET_DIR || 'public_html/' }}
           dry-run: ${{ github.event.inputs.dry_run || false }}
           dangerous-clean-slate: false
+

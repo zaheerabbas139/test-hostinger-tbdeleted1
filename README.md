@@ -17,6 +17,43 @@ All system architecture specifications and operational migration guides are stru
 - **Infrastructure Runbooks (`docs/infrastructure/`):**
   - [Cross-Account Hostinger Migration (`docs/infrastructure/hostinger-website-migration.md`)](docs/infrastructure/hostinger-website-migration.md) — Cutover runbook between Hostinger client accounts.
   - [Business to Unlimited Plan Move (`docs/infrastructure/business-to-unlimited-migration-plan.md`)](docs/infrastructure/business-to-unlimited-migration-plan.md) — Step-by-step tier migration strategy.
+  - [GitHub Actions CI/CD Specification (`docs/infrastructure/github-actions-ci-cd.md`)](docs/infrastructure/github-actions-ci-cd.md) — Production pipeline for automated validation, static building, and FTPS deployment.
+
+---
+
+## 🚀 CI/CD & Automated Deployment
+
+The repository uses enterprise-grade GitHub Actions workflows:
+
+- **Continuous Integration (`.github/workflows/ci.yml`):**
+  - Triggers on Pull Requests and Pushes to `main`.
+  - Enforces type safety and Zod Content Schema validation via `npm run check` (`astro check`).
+  - Audits dependencies with `npm audit`.
+  - Validates static compilation (`npm run build`) and uploads build artifacts.
+- **Continuous Deployment (`.github/workflows/deploy-hostinger.yml`):**
+  - Deploys pre-compiled static assets (`dist/`) directly to Hostinger web roots via secure FTPS.
+  - Controlled by GitHub repository secrets (`HOSTINGER_FTP_SERVER`, `HOSTINGER_FTP_USERNAME`, `HOSTINGER_FTP_PASSWORD`).
+
+---
+
+## 💻 Local Development & Build Commands
+
+```bash
+# Install dependencies
+npm ci
+
+# Start local Astro development server
+npm run dev
+
+# Validate TypeScript & Astro Content Schemas
+npm run check
+
+# Build production static site
+npm run build
+
+# Preview production build locally
+npm run preview
+```
 
 ---
 
