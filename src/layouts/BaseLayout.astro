@@ -2,19 +2,25 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CookieConsent from '../components/CookieConsent.astro';
+import ThemeSwitcher from '../components/dev/ThemeSwitcher.astro';
+import type { ThemeId } from '../config/theme';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  theme?: ThemeId;
 }
 
 const {
   title,
   description = 'Prana Solutions Tech - Enterprise Microsoft Solutions Partner for Cloud, Cyber Security, Managed Services, and Digital Transformation.',
   image = '/assets/images/Banner-03-1.png',
+  theme,
 } = Astro.props;
+
+const isDev = import.meta.env.DEV;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://pranast.com');
 const formattedTitle = title === 'Home' ? 'Prana Solutions Tech | Trusted Microsoft Solutions Partner' : `${title} | Prana Solutions Tech`;
@@ -96,6 +102,7 @@ const formattedTitle = title === 'Home' ? 'Prana Solutions Tech | Trusted Micros
     </main>
     <Footer />
     <CookieConsent />
+    {isDev && <ThemeSwitcher currentTheme={theme} />}
   </body>
 </html>
 

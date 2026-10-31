@@ -51,6 +51,7 @@ const themeProps = {
   title={post.data.title}
   description={post.data.description}
   image={post.data.featured_image}
+  theme={activeTheme}
 >
   {activeTheme === 'editorial' ? (
     <EditorialTheme {...themeProps}>

@@ -1,0 +1,196 @@
+---
+import { THEMES, resolveTheme, type ThemeId } from '../../config/theme';
+
+interface Props {
+  currentTheme?: ThemeId;
+}
+
+const { currentTheme: propTheme } = Astro.props;
+const serverActiveTheme = propTheme || resolveTheme(Astro.url);
+---
+
+<!-- Dev Theme Switcher (Active only in import.meta.env.DEV) -->
+<aside
+  id="dev-theme-switcher"
+  class="fixed bottom-5 right-5 z-50 font-sans print:hidden select-none"
+  aria-label="Development Theme Switcher"
+>
+  <!-- Minimized Trigger Pill -->
+  <button
+    type="button"
+    id="dev-theme-toggle-btn"
+    class="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900/95 text-white hover:bg-slate-800 border border-slate-700/80 shadow-2xl backdrop-blur-md transition-all duration-200 transform hover:scale-105 cursor-pointer text-xs font-medium"
+    title="Toggle Theme Switcher"
+  >
+    <span class="flex h-2 w-2 relative">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+    </span>
+    <span class="flex items-center gap-1.5">
+      <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+      </svg>
+      <span>Theme:</span>
+      <strong id="active-theme-label" class="font-bold text-indigo-300 capitalize">
+        {serverActiveTheme}
+      </strong>
+    </span>
+    <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+      DEV
+    </span>
+  </button>
+
+  <!-- Expanded Modal / Flyout Panel -->
+  <div
+    id="dev-theme-panel"
+    class="hidden mt-3 w-80 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-slate-950/95 text-slate-100 border border-slate-800 shadow-2xl backdrop-blur-md p-4 transition-all"
+  >
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider">Multi-Theme Engine</h3>
+          <p class="text-[11px] text-slate-400">Instant layout switcher (dev only)</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        id="dev-theme-close-btn"
+        class="text-slate-400 hover:text-white p-1 rounded-md hover:bg-slate-800 transition cursor-pointer"
+        aria-label="Close theme switcher"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Theme Option List -->
+    <div class="space-y-2">
+      {THEMES.map((theme) => {
+        const isCurrent = theme.id === serverActiveTheme;
+        return (
+          <button
+            type="button"
+            data-theme-id={theme.id}
+            class={`theme-select-btn w-full text-left p-3 rounded-xl border transition cursor-pointer flex flex-col gap-1 ${
+              isCurrent
+                ? 'bg-indigo-950/60 border-indigo-500/80 ring-1 ring-indigo-500/50'
+                : 'bg-slate-900/60 border-slate-800 hover:bg-slate-800/80 hover:border-slate-700'
+            }`}
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                {theme.name}
+                {isCurrent && (
+                  <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500 text-[10px] font-bold text-white">
+                    ✓
+                  </span>
+                )}
+              </span>
+              {theme.badge && (
+                <span
+                  class={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    theme.id === 'modern-saas'
+                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                      : theme.id === 'editorial'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      : 'bg-slate-700 text-slate-300'
+                  }`}
+                >
+                  {theme.badge}
+                </span>
+              )}
+            </div>
+            <p class="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+              {theme.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Footer Controls -->
+    <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+      <span class="text-slate-500">Persisted in Session</span>
+      <button
+        type="button"
+        id="dev-theme-reset-btn"
+        class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition cursor-pointer"
+      >
+        Reset to Classic
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script>
+  function initThemeSwitcher() {
+    const toggleBtn = document.getElementById('dev-theme-toggle-btn');
+    const closeBtn = document.getElementById('dev-theme-close-btn');
+    const panel = document.getElementById('dev-theme-panel');
+    const resetBtn = document.getElementById('dev-theme-reset-btn');
+    const themeButtons = document.querySelectorAll('.theme-select-btn');
+    const activeLabel = document.getElementById('active-theme-label');
+
+    if (!toggleBtn || !panel) return;
+
+    // Toggle panel visibility
+    toggleBtn.addEventListener('click', () => {
+      panel.classList.toggle('hidden');
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      panel.classList.add('hidden');
+    });
+
+    // Check current URL search param or session storage
+    const currentUrl = new URL(window.location.href);
+    const queryTheme = currentUrl.searchParams.get('theme');
+    const storedTheme = sessionStorage.getItem('pranast_dev_theme');
+
+    if (queryTheme) {
+      sessionStorage.setItem('pranast_dev_theme', queryTheme);
+      if (activeLabel) activeLabel.textContent = queryTheme;
+    } else if (storedTheme && ['classic', 'editorial', 'modern-saas'].includes(storedTheme)) {
+      // Auto-sync theme query param across blog routes if stored
+      if (currentUrl.pathname.startsWith('/blog/')) {
+        currentUrl.searchParams.set('theme', storedTheme);
+        window.location.replace(currentUrl.toString());
+        return;
+      }
+    }
+
+    // Handle theme selection
+    themeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const selectedTheme = btn.getAttribute('data-theme-id');
+        if (!selectedTheme) return;
+
+        sessionStorage.setItem('pranast_dev_theme', selectedTheme);
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set('theme', selectedTheme);
+        window.location.href = nextUrl.toString();
+      });
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', () => {
+      sessionStorage.removeItem('pranast_dev_theme');
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.delete('theme');
+      window.location.href = nextUrl.toString();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeSwitcher);
+  } else {
+    initThemeSwitcher();
+  }
+</script>
+
