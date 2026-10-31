@@ -1,0 +1,151 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  mode?: 'desktop' | 'mobile' | 'both';
+  class?: string;
+}
+
+const { headings = [], mode = 'both', class: className = '' } = Astro.props;
+
+// Filter headings to h2 and h3 for optimal editorial reading structure
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const hasHeadings = tocHeadings.length > 0;
+---
+
+{hasHeadings && (
+  <div class={className}>
+    {/* Mobile Collapsible TOC Drawer */}
+    {(mode === 'mobile' || mode === 'both') && (
+      <details class="lg:hidden group mb-8 rounded-xl border border-stone-200 bg-stone-50/80 p-4 transition-all duration-200 open:bg-stone-50 open:shadow-xs">
+        <summary class="flex cursor-pointer items-center justify-between text-sm font-serif font-bold text-stone-900 select-none">
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+            <span>Table of Contents ({tocHeadings.length})</span>
+          </span>
+          <svg class="w-4 h-4 text-stone-500 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <nav class="mt-4 pt-4 border-t border-stone-200/80" aria-label="Table of contents (mobile)">
+          <ul class="space-y-2 text-sm">
+            {tocHeadings.map((heading) => (
+              <li class={heading.depth === 3 ? 'pl-4 border-l border-stone-200 ml-1' : ''}>
+                <a
+                  href={`#${heading.slug}`}
+                  class="text-stone-600 hover:text-emerald-800 transition-colors block py-0.5"
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </details>
+    )}
+
+    {/* Desktop Sticky Sidebar TOC */}
+    {(mode === 'desktop' || mode === 'both') && (
+      <nav
+        class="hidden lg:block bg-stone-50/90 rounded-2xl p-6 border border-stone-200/90 shadow-xs"
+        aria-label="Table of contents (desktop)"
+        id="desktop-toc-nav"
+      >
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-stone-200/80">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700 font-sans">
+              In this article
+            </h3>
+          </div>
+          <span class="text-xs text-stone-600 font-medium">{tocHeadings.length} sections</span>
+        </div>
+        <ul class="space-y-1.5 text-sm max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
+          {tocHeadings.map((heading) => (
+            <li class={heading.depth === 3 ? 'pl-3.5 border-l-2 border-stone-200 ml-1' : ''}>
+              <a
+                href={`#${heading.slug}`}
+                data-toc-slug={heading.slug}
+                class={`block transition-all py-1 px-2 rounded-md leading-snug ${
+                  heading.depth === 2
+                    ? 'font-medium text-stone-800 hover:text-emerald-900 hover:bg-emerald-50/60'
+                    : 'text-stone-600 hover:text-emerald-900 hover:bg-emerald-50/60 text-xs'
+                }`}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </div>
+)}
+
+<script>
+  // Progressive enhancement: highlight active TOC link based on viewport scroll position
+  function initTocScrollSpy() {
+    const desktopNav = document.getElementById('desktop-toc-nav');
+    if (!desktopNav) return;
+
+    const links = Array.from(desktopNav.querySelectorAll<HTMLAnchorElement>('[data-toc-slug]'));
+    if (links.length === 0) return;
+
+    const slugs = links.map((link) => link.getAttribute('data-toc-slug')).filter(Boolean) as string[];
+    const headingElements = slugs
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headingElements.length === 0) return;
+
+    let activeSlug: string | null = null;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find visible heading intersecting near top of viewport
+        const intersecting = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (intersecting.length > 0) {
+          activeSlug = intersecting[0].target.id;
+          updateActiveLink(activeSlug);
+        }
+      },
+      {
+        rootMargin: '0px 0px -60% 0px',
+        threshold: 0,
+      }
+    );
+
+    headingElements.forEach((el) => observer.observe(el));
+
+    function updateActiveLink(targetSlug: string) {
+      links.forEach((link) => {
+        const isCurrent = link.getAttribute('data-toc-slug') === targetSlug;
+        if (isCurrent) {
+          link.classList.add('bg-emerald-100/70', 'text-emerald-900', 'font-semibold');
+          link.classList.remove('text-stone-600', 'text-stone-800');
+        } else {
+          link.classList.remove('bg-emerald-100/70', 'text-emerald-900', 'font-semibold');
+          if (link.getAttribute('data-depth') === '3') {
+            link.classList.add('text-stone-600');
+          } else {
+            link.classList.add('text-stone-800');
+          }
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTocScrollSpy);
+  } else {
+    initTocScrollSpy();
+  }
+</script>

@@ -3,6 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
 import type { Author } from '../data/authors';
 import BlogCard from '../components/BlogCard.astro';
+import TableOfContents from '../components/themes/TableOfContents.astro';
+import AuthorBioCard from '../components/themes/AuthorBioCard.astro';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -23,57 +25,417 @@ const {
   nextPost,
   relatedPosts = [],
 } = Astro.props;
+
+// Calculate estimated reading time based on word count
+const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 225));
+const readingTimeText = `${readingMinutes} min read`;
 ---
 
-<!-- Editorial / Magazine Theme Scaffolding (Full layout enhanced in Stage 2) -->
-<article class="py-16 bg-[#faf9f6] text-slate-800">
-  <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+<!-- Editorial / Magazine Theme (Stage 2) -->
+<article class="bg-[#faf9f6] text-stone-800 antialiased selection:bg-emerald-100 selection:text-emerald-900 pb-20">
+  
+  <!-- Breadcrumb & Metadata Chrome -->
+  <div class="border-b border-stone-200/70 bg-stone-100/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <nav class="flex items-center text-xs text-stone-500 font-sans" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-emerald-800 transition">Home</a>
+        <span class="mx-2 text-stone-300">/</span>
+        <a href="/blog/" class="hover:text-emerald-800 transition">Blog</a>
+        <span class="mx-2 text-stone-300">/</span>
+        <span class="text-stone-700 font-medium">{post.data.category}</span>
+        <span class="mx-2 text-stone-300 hidden sm:inline">/</span>
+        <span class="text-stone-400 truncate max-w-xs hidden sm:inline">{post.data.title}</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Editorial Headline-First Hero -->
+  <header class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
+    <!-- Badges & Reading Meta -->
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
         {post.data.category}
       </span>
-      <span class="text-xs text-slate-500 font-medium">Editorial Preview</span>
-      <span class="text-slate-300">•</span>
-      <time class="text-xs text-slate-500" datetime={post.data.date}>{formattedDate}</time>
+      <span class="inline-flex items-center gap-1.5 text-xs text-stone-500 font-medium">
+        <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{readingTimeText}</span>
+      </span>
+      <span class="text-stone-300">&bull;</span>
+      <time class="text-xs text-stone-500" datetime={post.data.date}>{formattedDate}</time>
     </div>
-    <h1 class="text-3xl sm:text-5xl font-serif font-bold text-slate-900 tracking-tight leading-tight">
+
+    <!-- Title -->
+    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.12]">
       {post.data.title}
     </h1>
+
+    <!-- Subtitle / Dek -->
     {post.data.description && (
-      <p class="text-xl text-slate-600 font-serif italic mt-4 leading-relaxed">
+      <p class="text-xl sm:text-2xl text-stone-600 font-serif italic mt-6 leading-relaxed max-w-4xl">
         {post.data.description}
       </p>
     )}
-  </header>
 
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="prose prose-lg max-w-none">
-      <slot />
-    </div>
-  </div>
+    <!-- Author Byline Bar -->
+    <div class="mt-8 pt-6 border-t border-stone-200/80 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <img
+          src={author.avatar}
+          alt={author.name}
+          width="44"
+          height="44"
+          class="w-11 h-11 rounded-full object-cover border border-stone-300/80 shadow-xs flex-shrink-0"
+          loading="eager"
+        />
+        <div>
+          <p class="text-sm font-serif font-bold text-stone-900 leading-tight">
+            {author.name}
+          </p>
+          <p class="text-xs text-stone-500 mt-0.5">
+            Published in <span class="font-medium text-stone-700">{post.data.category}</span>
+          </p>
+        </div>
+      </div>
 
-  <!-- Author box -->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-10 border-t border-slate-200">
-    <div class="flex flex-col sm:flex-row gap-6 items-start">
-      <img src={author.avatar} alt={author.name} width="96" height="96" class="w-20 h-20 rounded-full object-cover flex-shrink-0" loading="lazy" decoding="async" />
-      <div>
-        <p class="text-base font-serif font-bold text-slate-900">{author.name}</p>
-        <p class="text-sm text-slate-600 leading-relaxed mt-1 mb-3">{author.bio}</p>
-        <a href="/blog/" class="text-sm font-semibold text-emerald-700 hover:text-emerald-900">More stories by {author.name} &rarr;</a>
+      <!-- Quick Social / Action Links -->
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="copy-link-btn"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-stone-600 bg-white border border-stone-200 hover:bg-stone-50 hover:text-emerald-800 transition shadow-2xs"
+          title="Copy article link"
+        >
+          <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span id="copy-link-text">Copy link</span>
+        </button>
       </div>
     </div>
+  </header>
+
+  <!-- Featured Image Showcase -->
+  {post.data.featured_image && (
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <figure class="rounded-2xl overflow-hidden border border-stone-200/90 shadow-sm bg-white">
+        <img
+          src={post.data.featured_image}
+          alt={post.data.featured_image_alt || post.data.title}
+          class="w-full h-auto max-h-[500px] object-cover"
+          loading="eager"
+          onerror="this.onerror=null; this.src='/assets/images/Banner-03-1.png';"
+        />
+        {post.data.featured_image_alt && (
+          <figcaption class="px-4 py-2.5 text-xs text-stone-500 font-sans italic bg-stone-50/80 border-t border-stone-100">
+            {post.data.featured_image_alt}
+          </figcaption>
+        )}
+      </figure>
+    </div>
+  )}
+
+  <!-- Two-Column Editorial Layout -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      
+      <!-- Primary Reading Column -->
+      <main class="lg:col-span-8 min-w-0" id="editorial-main-content">
+        <!-- Mobile Collapsible TOC Drawer (shows only on <lg) -->
+        <TableOfContents headings={headings} mode="mobile" />
+
+        <!-- Rich Editorial Prose Body -->
+        <div class="editorial-content">
+          <slot />
+        </div>
+
+        <!-- Inline Author Box -->
+        <div class="mt-16 pt-10 border-t border-stone-200">
+          <AuthorBioCard author={author} variant="inline" />
+        </div>
+
+        <!-- Posts Navigation -->
+        {(previousPost || nextPost) && (
+          <nav class="mt-12 pt-8 border-t border-stone-200" aria-label="Editorial post navigation">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-6 font-sans">
+              Keep Reading
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {previousPost ? (
+                <a
+                  href={`/blog/${previousPost.id}/`}
+                  class="group p-5 rounded-xl border border-stone-200 bg-white hover:border-emerald-300 hover:shadow-xs transition block"
+                >
+                  <span class="text-xs font-semibold text-emerald-800 flex items-center gap-1 mb-1">
+                    &larr; Previous Story
+                  </span>
+                  <p class="font-serif font-bold text-stone-900 group-hover:text-emerald-900 transition leading-snug line-clamp-2">
+                    {previousPost.data.title}
+                  </p>
+                </a>
+              ) : (
+                <div />
+              )}
+
+              {nextPost ? (
+                <a
+                  href={`/blog/${nextPost.id}/`}
+                  class="group p-5 rounded-xl border border-stone-200 bg-white hover:border-emerald-300 hover:shadow-xs transition block sm:text-right"
+                >
+                  <span class="text-xs font-semibold text-emerald-800 flex items-center gap-1 sm:justify-end mb-1">
+                    Next Story &rarr;
+                  </span>
+                  <p class="font-serif font-bold text-stone-900 group-hover:text-emerald-900 transition leading-snug line-clamp-2">
+                    {nextPost.data.title}
+                  </p>
+                </a>
+              ) : (
+                <div />
+              )}
+            </div>
+          </nav>
+        )}
+      </main>
+
+      <!-- Pinned Desktop Sidebar (Sticky on lg+) -->
+      <aside class="hidden lg:block lg:col-span-4 sticky top-28 space-y-6 self-start" aria-label="Article utilities & author">
+        <!-- Desktop Sticky Table of Contents -->
+        <TableOfContents headings={headings} mode="desktop" />
+
+        <!-- Pinned Author Bio Card -->
+        <AuthorBioCard author={author} variant="sidebar" />
+
+        <!-- Reading Utility Actions Card -->
+        <div class="bg-stone-50/90 rounded-2xl p-5 border border-stone-200/90 shadow-xs flex items-center justify-between text-xs text-stone-600">
+          <span class="font-medium">Enjoyed this read?</span>
+          <button
+            type="button"
+            id="back-to-top-btn"
+            class="text-emerald-800 hover:text-emerald-950 font-semibold inline-flex items-center gap-1 transition cursor-pointer"
+          >
+            <span>Back to top</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+    </div>
   </div>
 
-  <!-- Related posts -->
+  <!-- Related Stories -->
   {relatedPosts.length > 0 && (
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-10 border-t border-slate-200" aria-labelledby="editorial-related-posts">
-      <h2 id="editorial-related-posts" class="text-2xl font-serif font-bold text-slate-900 mb-8">Related Stories</h2>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-12 border-t border-stone-200" aria-labelledby="editorial-related-stories">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">
+            Curated Insights
+          </span>
+          <h2 id="editorial-related-stories" class="text-2xl sm:text-3xl font-serif font-bold text-stone-900 mt-1">
+            Related Stories in {post.data.category}
+          </h2>
+        </div>
+        <a
+          href="/blog/"
+          class="text-sm font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 transition"
+        >
+          <span>All articles</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {relatedPosts.map((related) => (
-          <BlogCard post={related} showExcerpt={false} />
+          <BlogCard post={related} showExcerpt={true} showAuthor={true} />
         ))}
       </div>
     </section>
   )}
+
 </article>
 
+<style>
+  /* Scoped Editorial Typography for Markdown Slot Content */
+  :global(.editorial-content) {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  :global(.editorial-content h1) {
+    font-family: 'Roboto Serif', Georgia, Cambria, serif;
+    font-weight: 700;
+    color: #1c1917; /* stone-900 */
+    font-size: 2.25rem;
+    line-height: 1.25;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+    scroll-margin-top: 6rem;
+  }
+
+  :global(.editorial-content h2) {
+    font-family: 'Roboto Serif', Georgia, Cambria, serif;
+    font-weight: 700;
+    color: #1c1917; /* stone-900 */
+    font-size: 1.875rem;
+    line-height: 1.3;
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e7e5e4; /* stone-200 */
+    letter-spacing: -0.015em;
+    scroll-margin-top: 6rem;
+  }
+
+  :global(.editorial-content h3) {
+    font-family: 'Roboto Serif', Georgia, Cambria, serif;
+    font-weight: 600;
+    color: #1c1917;
+    font-size: 1.375rem;
+    line-height: 1.35;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+    scroll-margin-top: 6rem;
+  }
+
+  :global(.editorial-content p) {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.85;
+    color: #44403c; /* stone-700 */
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    :global(.editorial-content p) {
+      font-size: 1.1875rem; /* 19px */
+    }
+  }
+
+  :global(.editorial-content ul) {
+    list-style-type: disc;
+    list-style-position: outside;
+    margin-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #44403c;
+  }
+
+  :global(.editorial-content ol) {
+    list-style-type: decimal;
+    list-style-position: outside;
+    margin-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #44403c;
+  }
+
+  :global(.editorial-content li) {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+  }
+
+  :global(.editorial-content blockquote) {
+    font-family: 'Roboto Serif', Georgia, Cambria, serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #292524; /* stone-800 */
+    border-left: 4px solid #047857; /* emerald-700 */
+    background-color: rgba(245, 245, 244, 0.7); /* stone-100/70 */
+    padding: 1.25rem 1.5rem;
+    margin: 2.25rem 0;
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  :global(.editorial-content strong) {
+    font-weight: 600;
+    color: #1c1917;
+  }
+
+  :global(.editorial-content a) {
+    color: #065f46; /* emerald-800 */
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: #a7f3d0;
+    transition: color 0.15s, text-decoration-color 0.15s;
+  }
+
+  :global(.editorial-content a:hover) {
+    color: #064e3b;
+    text-decoration-color: #047857;
+  }
+
+  :global(.editorial-content img) {
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    margin: 2.5rem 0;
+    border: 1px solid #e7e5e4;
+  }
+
+  :global(.editorial-content pre) {
+    background-color: #1c1917;
+    color: #f5f5f4;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    margin: 2rem 0;
+    font-size: 0.925rem;
+  }
+
+  :global(.editorial-content code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: #f5f5f4;
+    color: #047857;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+
+  :global(.editorial-content pre code) {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+</style>
+
+<script>
+  // Article Utilities: Copy Link & Smooth Back-to-Top
+  function initEditorialUtilities() {
+    const copyBtn = document.getElementById('copy-link-btn');
+    const copyText = document.getElementById('copy-link-text');
+
+    if (copyBtn && copyText) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          const original = copyText.textContent;
+          copyText.textContent = 'Copied!';
+          copyBtn.classList.add('text-emerald-800', 'border-emerald-300');
+          setTimeout(() => {
+            copyText.textContent = original;
+            copyBtn.classList.remove('text-emerald-800', 'border-emerald-300');
+          }, 2000);
+        } catch {
+          // Fallback if clipboard API is restricted
+          copyText.textContent = 'Failed';
+        }
+      });
+    }
+
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEditorialUtilities);
+  } else {
+    initEditorialUtilities();
+  }
+</script>

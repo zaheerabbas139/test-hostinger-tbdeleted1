@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --font-serif: 'Roboto Serif', Georgia, Cambria, 'Times New Roman', Times, serif;
   --color-brand-50: #eff6ff;
   --color-brand-100: #dbeafe;
   --color-brand-500: #1d4ed8;
