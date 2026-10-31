@@ -18,7 +18,13 @@ const navItems: NavItem[] = [
       { label: 'IT Support & Managed Services', href: '/it-support-managed-services' },
     ],
   },
-  { label: 'BridgeAD', href: '/bridgead' },
+  {
+    label: 'Technology and Innovation',
+    href: '/#technology-innovation',
+    children: [
+      { label: 'BridgeAD', href: '/bridgead' },
+    ],
+  },
   { label: 'Case Studies', href: '/case-studies' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQ', href: '/faq' },
@@ -41,23 +47,27 @@ const currentPath = Astro.url.pathname;
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-6">
+      <nav class="hidden lg:flex items-center gap-4 xl:gap-6">
         {navItems.map((item) => (
           item.children ? (
             <div class="relative group">
-              <button class="flex items-center gap-1 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition">
+              <button class={`flex items-center gap-1 py-2 text-sm font-medium transition ${
+                item.children.some((child) => currentPath === child.href || currentPath === child.href + '/')
+                  ? 'text-blue-600 font-semibold'
+                  : 'text-slate-700 hover:text-blue-600'
+              }`}>
                 <span>{item.label}</span>
                 <svg class="w-4 h-4 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              <div class="absolute left-0 top-full hidden group-hover:block w-64 pt-2 shadow-lg">
+              <div class="absolute left-0 top-full hidden group-hover:block group-focus-within:block w-64 pt-2 shadow-lg">
                 <div class="bg-white rounded-lg border border-slate-100 py-2 shadow-md">
                   {item.children.map((child) => (
                     <a
                       href={child.href}
                       class={`block px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition ${
-                        currentPath === child.href ? 'text-blue-600 font-semibold bg-blue-50/50' : ''
+                        currentPath === child.href || currentPath === child.href + '/' ? 'text-blue-600 font-semibold bg-blue-50/50' : ''
                       }`}
                     >
                       {child.label}
@@ -70,7 +80,7 @@ const currentPath = Astro.url.pathname;
             <a
               href={item.href}
               class={`py-2 text-sm font-medium transition ${
-                currentPath === item.href
+                currentPath === item.href || currentPath === item.href + '/'
                   ? 'text-blue-600 font-semibold'
                   : 'text-slate-700 hover:text-blue-600'
               }`}
@@ -110,12 +120,20 @@ const currentPath = Astro.url.pathname;
     {navItems.map((item) => (
       item.children ? (
         <div class="py-2">
-          <div class="font-semibold text-slate-800 text-sm px-2 mb-1">{item.label}</div>
+          <div class={`font-semibold text-sm px-2 mb-1 ${
+            item.children.some((child) => currentPath === child.href || currentPath === child.href + '/')
+              ? 'text-blue-600'
+              : 'text-slate-800'
+          }`}>{item.label}</div>
           <div class="pl-4 space-y-1">
             {item.children.map((child) => (
               <a
                 href={child.href}
-                class="block py-1.5 text-sm text-slate-600 hover:text-blue-600"
+                class={`block py-1.5 text-sm transition ${
+                  currentPath === child.href || currentPath === child.href + '/'
+                    ? 'text-blue-600 font-semibold'
+                    : 'text-slate-600 hover:text-blue-600'
+                }`}
               >
                 {child.label}
               </a>
@@ -125,7 +143,11 @@ const currentPath = Astro.url.pathname;
       ) : (
         <a
           href={item.href}
-          class="block py-2 text-sm font-medium text-slate-700 hover:text-blue-600"
+          class={`block py-2 text-sm font-medium transition ${
+            currentPath === item.href || currentPath === item.href + '/'
+              ? 'text-blue-600 font-semibold'
+              : 'text-slate-700 hover:text-blue-600'
+          }`}
         >
           {item.label}
         </a>
