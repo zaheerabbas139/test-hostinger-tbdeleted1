@@ -7,6 +7,7 @@ interface Props {
 
 const { currentTheme: propTheme } = Astro.props;
 const serverActiveTheme = propTheme || resolveTheme(Astro.url);
+const isArticleRoute = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog/';
 ---
 
 <!-- Dev Theme Switcher (Active only in import.meta.env.DEV) -->
@@ -43,7 +44,7 @@ const serverActiveTheme = propTheme || resolveTheme(Astro.url);
   <!-- Expanded Modal / Flyout Panel -->
   <div
     id="dev-theme-panel"
-    class="hidden mt-3 w-80 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-slate-950/95 text-slate-100 border border-slate-800 shadow-2xl backdrop-blur-md p-4 transition-all"
+    class="hidden mt-3 w-84 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-slate-950/95 text-slate-100 border border-slate-800 shadow-2xl backdrop-blur-md p-4 transition-all"
   >
     <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
       <div class="flex items-center gap-2">
@@ -68,6 +69,25 @@ const serverActiveTheme = propTheme || resolveTheme(Astro.url);
         </svg>
       </button>
     </div>
+
+    <!-- Context Notice for non-article pages -->
+    {!isArticleRoute && (
+      <div class="mb-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 leading-snug">
+        <div class="flex items-start gap-1.5">
+          <span class="text-amber-400 font-bold leading-none">ℹ</span>
+          <div>
+            <span class="font-semibold text-amber-300">Article Layouts:</span> Themes currently apply to individual blog posts. Selecting a theme will take you straight to a preview article.
+          </div>
+        </div>
+      </div>
+    )}
+
+    {isArticleRoute && (
+      <div class="mb-3 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-300 flex items-center justify-between">
+        <span>Article View: Active</span>
+        <span class="text-stone-400">Previewing live layout</span>
+      </div>
+    )}
 
     <!-- Theme Option List -->
     <div class="space-y-2">
@@ -148,21 +168,36 @@ const serverActiveTheme = propTheme || resolveTheme(Astro.url);
       panel.classList.add('hidden');
     });
 
-    // Check current URL search param or session storage
     const currentUrl = new URL(window.location.href);
     const queryTheme = currentUrl.searchParams.get('theme');
     const storedTheme = sessionStorage.getItem('pranast_dev_theme');
+    const currentPath = currentUrl.pathname;
+    const isSingleArticle = currentPath.startsWith('/blog/') && currentPath !== '/blog/';
 
     if (queryTheme) {
       sessionStorage.setItem('pranast_dev_theme', queryTheme);
       if (activeLabel) activeLabel.textContent = queryTheme;
     } else if (storedTheme && ['classic', 'editorial', 'modern-saas'].includes(storedTheme)) {
-      // Auto-sync theme query param across blog routes if stored
-      if (currentUrl.pathname.startsWith('/blog/')) {
+      if (isSingleArticle) {
         currentUrl.searchParams.set('theme', storedTheme);
         window.location.replace(currentUrl.toString());
         return;
       }
+    }
+
+    // Automatically append ?theme=<storedTheme> to blog links so navigation doesn't reset theme
+    const effectiveTheme = queryTheme || storedTheme;
+    if (effectiveTheme && ['classic', 'editorial', 'modern-saas'].includes(effectiveTheme)) {
+      document.querySelectorAll('a[href^="/blog/"]').forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href && href !== '/blog/' && href !== '/blog') {
+          try {
+            const linkUrl = new URL(href, window.location.origin);
+            linkUrl.searchParams.set('theme', effectiveTheme);
+            link.setAttribute('href', linkUrl.pathname + linkUrl.search);
+          } catch {}
+        }
+      });
     }
 
     // Handle theme selection
@@ -172,18 +207,29 @@ const serverActiveTheme = propTheme || resolveTheme(Astro.url);
         if (!selectedTheme) return;
 
         sessionStorage.setItem('pranast_dev_theme', selectedTheme);
-        const nextUrl = new URL(window.location.href);
-        nextUrl.searchParams.set('theme', selectedTheme);
-        window.location.href = nextUrl.toString();
+
+        if (isSingleArticle) {
+          const nextUrl = new URL(window.location.href);
+          nextUrl.searchParams.set('theme', selectedTheme);
+          window.location.href = nextUrl.toString();
+        } else {
+          // If user switches theme from homepage, blog index, or other pages,
+          // redirect them directly to an article where the theme is implemented
+          window.location.href = `/blog/the-power-of-microsoft-power-platform/?theme=${selectedTheme}`;
+        }
       });
     });
 
     // Reset button
     resetBtn?.addEventListener('click', () => {
       sessionStorage.removeItem('pranast_dev_theme');
-      const nextUrl = new URL(window.location.href);
-      nextUrl.searchParams.delete('theme');
-      window.location.href = nextUrl.toString();
+      if (isSingleArticle) {
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.delete('theme');
+        window.location.href = nextUrl.toString();
+      } else {
+        window.location.href = '/blog/the-power-of-microsoft-power-platform/?theme=classic';
+      }
     });
   }
 
@@ -193,4 +239,3 @@ const serverActiveTheme = propTheme || resolveTheme(Astro.url);
     initThemeSwitcher();
   }
 </script>
-

@@ -31,7 +31,10 @@ export const THEMES: readonly ThemeConfig[] = [
 export const DEFAULT_THEME: ThemeId = 'classic';
 
 // Single-flag production activation: allows build-time env var or config flag
-export const ACTIVE_THEME: ThemeId = (typeof process !== 'undefined' && (process.env?.THEME as ThemeId)) || DEFAULT_THEME;
+export const ACTIVE_THEME: ThemeId =
+  (typeof import.meta !== 'undefined' && (import.meta.env?.THEME as ThemeId)) ||
+  (typeof process !== 'undefined' && (process.env?.THEME as ThemeId)) ||
+  DEFAULT_THEME;
 
 export function isValidTheme(theme: unknown): theme is ThemeId {
   return typeof theme === 'string' && THEMES.some((t) => t.id === theme);
