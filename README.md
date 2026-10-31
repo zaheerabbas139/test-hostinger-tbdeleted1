@@ -1,8 +1,34 @@
-# Pranast Platform & Hostinger Deployment
+# Pranast Platform: Astro 7 SSG & Infrastructure Hub
 
-This repository serves dual purposes:
-1. **Connectivity Probe & Deploy Target:** A lightweight PHP verification site used to test and validate automated GitHub → Hostinger Git deployments.
-2. **Architecture & Infrastructure Knowledge Base:** The centralized technical repository housing system audits, target modernization blueprints, and operational hosting cutover runbooks in [`docs/`](docs/).
+This repository serves as the central codebase and technical knowledge hub for the **Pranast Digital Platform**:
+
+1. **Modernized Astro 7 Static Platform:** High-performance, zero-JS by default static site built with **Astro 7.4+** and **Tailwind CSS v4**, replacing the legacy WordPress/Elementor runtime with type-safe Content Collections and sub-second page generation.
+2. **Architecture & Infrastructure Knowledge Base:** Centralized technical repository housing system audits, target modernization blueprints, and operational hosting cutover runbooks in [`docs/`](docs/).
+3. **Automated FTPS & Edge Deployment:** Automated GitHub Actions workflows for continuous integration (`astro check`, schema validation, static build) and continuous deployment to Hostinger web roots via secure FTPS.
+
+---
+
+## ⚡ Tech Stack Architecture
+
+| Layer | Technology | Specification / Role |
+| :--- | :--- | :--- |
+| **Framework** | **Astro 7.4.x** | Static Site Generation (`output: 'static'`), zero-JS default, islands architecture |
+| **Styling** | **Tailwind CSS 4.3.x** | Native Vite integration via `@tailwindcss/vite`, CSS-first tokens in `src/styles/global.css` |
+| **Content Engine** | **Astro Content Layer API** | Typed markdown collections defined in `src/content.config.ts` using `glob` loader and Zod |
+| **Language & Tooling**| **TypeScript 5.9.x** / `@astrojs/check` | Strict frontmatter type safety, AST checking, compile-time validation |
+| **Deployment Target** | **Hostinger Web Hosting** | Automated FTPS deployment to `public_html` |
+| **Edge CDN & DNS** | **Cloudflare** | Edge redirects (Bulk CSV / Workers), SSL/TLS Full (Strict), WAF security |
+
+---
+
+## 🔄 Recent Upgrades: Astro 7 & Tailwind CSS v4
+
+The codebase was recently modernized to **Astro 7** and **Tailwind CSS v4**:
+
+* **Vite-Native Tailwind Integration:** Dropped `@astrojs/tailwind` (which reached end-of-life for Astro 7) and `tailwind.config.mjs`. Integrated `@tailwindcss/vite` directly inside `astro.config.mjs`.
+* **CSS-First Theme Tokens:** Brand colors (`brand-50` through `brand-900`) and theme settings are now configured directly in `src/styles/global.css` via `@theme` and `@import "tailwindcss";`. Layouts consume them via `@reference`.
+* **Content Layer API Migration:** Migrated content configuration from legacy `src/content/config.ts` to modern root `src/content.config.ts` utilizing `glob` loaders (`astro/loaders`) with deterministic slug-based identifiers (`generateSlugId`).
+* **Modern Content Rendering API:** Dynamic page templates (`[...slug].astro`, `blog/[slug].astro`, `case-studies/[slug].astro`) use `render(entry)` from `astro:content` and query entries by `entry.id`.
 
 ---
 
@@ -14,6 +40,7 @@ All system architecture specifications and operational migration guides are stru
 - **Architecture Blueprints (`docs/architecture/`):**
   - [As-Is Tech Stack Analysis (`docs/architecture/uat-pranast-tech-stack.md`)](docs/architecture/uat-pranast-tech-stack.md) — Comprehensive audit of WordPress, PHP 8.5, LiteSpeed, and Elementor.
   - [Target-State Astro Blueprint (`docs/architecture/wordpress-to-astro-migration-plan.md`)](docs/architecture/wordpress-to-astro-migration-plan.md) — Architectural roadmap for static site modernization with Astro & Markdown.
+  - [Phase Reports (`docs/architecture/`)](docs/README.md#🗺️-documentation-matrix) — Detailed Phase 1–7 execution reports (content schema, scaffolding, UI components, SEO 301 redirects, decommissioning, edge cutover, and post-cutover verification).
 - **Infrastructure Runbooks (`docs/infrastructure/`):**
   - [Cross-Account Hostinger Migration (`docs/infrastructure/hostinger-website-migration.md`)](docs/infrastructure/hostinger-website-migration.md) — Cutover runbook between Hostinger client accounts.
   - [Business to Unlimited Plan Move (`docs/infrastructure/business-to-unlimited-migration-plan.md`)](docs/infrastructure/business-to-unlimited-migration-plan.md) — Step-by-step tier migration strategy.
@@ -44,30 +71,27 @@ For a full step-by-step walkthrough, prerequisites, and troubleshooting, see the
 # Install dependencies
 npm ci
 
-# Start local Astro development server (http://localhost:4321)
+# Start local Astro 7 development server (http://localhost:4321)
 npm run dev
 
-# Validate TypeScript & Astro Content Schemas
+# Validate TypeScript & Astro Content Layer Schemas (src/content.config.ts)
 npm run check
 
-# Build production static site
+# Build production static site (outputs to dist/ and mirrors to root for web serving)
 npm run build
 
 # Preview production build locally
 npm run preview
+
+# (Optional) Re-extract WordPress XML into Markdown collections
+npm run extract
 ```
 
 ---
 
-## 🚀 Deployment & Local Testing
+## 🌐 Legacy PHP Connectivity Probe
 
-### Deploying to Hostinger
-1. In hPanel, navigate to **Websites → Git** and connect this repository.
-2. Set the deployment branch to `main` and target destination to `public_html`.
-3. Pushes to `main` automatically deploy `index.php` to serve the connectivity probe.
-
-### Local Preview
-To test the local PHP probe:
+If testing legacy Hostinger PHP connectivity probe behaviors locally:
 ```bash
 php -S localhost:8000
 ```

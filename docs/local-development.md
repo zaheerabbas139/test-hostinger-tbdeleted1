@@ -105,7 +105,7 @@ npm run check
 ```
 
 This verifies:
-- Frontmatter schemas against [`src/content/config.ts`](../src/content/config.ts)
+- Frontmatter schemas against [`src/content.config.ts`](../src/content.config.ts) (Astro Content Layer API)
 - TypeScript typings in `.astro` and `.ts` files
 - Component prop constraints
 
