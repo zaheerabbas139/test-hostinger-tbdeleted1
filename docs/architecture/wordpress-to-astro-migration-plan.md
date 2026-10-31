@@ -45,11 +45,12 @@
 
 ```mermaid
 flowchart LR
-    A["Phase 1: Content Audit & Schema"] --> B["Phase 2: Automated Content Extraction"]
-    B --> C["Phase 3: Cleanse & Markdown Conversion"]
-    C --> D["Phase 4: Astro Project Build"]
-    D --> E["Phase 5: Decommission WordPress"]
-    E --> F["Phase 6: Cutover & Go-Live"]
+    A["Phase 1: Content Inventory & Schema\n(phase-1-content-inventory-schema.md)"] --> B["Phase 2: XML Extraction & Scaffolding\n(phase-2-extraction-scaffolding-report.md)"]
+    B --> C["Phase 3: UI Polish & Components\n(phase-3-ui-polish-components-report.md)"]
+    C --> D["Phase 4: SEO 301 Redirect Mapping\n(phase-4-seo-301-redirect-mapping.md)"]
+    D --> E["Phase 5: WP Decommissioning Runbook\n(phase-5-wordpress-decommissioning-runbook.md)"]
+    E --> F["Phase 6: Edge CDN & Production Cutover\n(phase-6-edge-cdn-production-cutover.md)"]
+    F --> G["Phase 7: Post-Cutover Verification\n(phase-7-post-cutover-verification-monitoring.md)"]
 ```
 
 ---

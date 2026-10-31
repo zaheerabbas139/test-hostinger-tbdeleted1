@@ -14,6 +14,9 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 | **Architecture** | [Phase 2: Extraction & Scaffolding Report](architecture/phase-2-extraction-scaffolding-report.md) | Frontend Engineers, Architects | Completed & Validated | Pipeline parsing 100% XML content directly into typed Markdown collections, Astro 5 scaffolding, and 21 static routes compiled in 1.13s. |
 | **Architecture** | [Phase 3: UI Polish & Custom Components](architecture/phase-3-ui-polish-components-report.md) | Frontend Engineers, UI/UX | Completed & Validated | Accessible WAI-ARIA tabs for BridgeAD showcase, 5-stage migration stepper, filterable capability matrix, and SEO FAQ accordion. |
 | **Architecture** | [Phase 4: SEO & 301 Redirect Mapping](architecture/phase-4-seo-301-redirect-mapping.md) | SEO Specialists, DevOps, Architects | Completed & Validated | Defense-in-depth redirect rules (.htaccess & Cloudflare edge worker/bulk CSV) preserving 100% SEO link equity and hardening against WP scanners. |
+| **Architecture** | [Phase 5: WordPress Decommissioning](architecture/phase-5-wordpress-decommissioning-runbook.md) | DevOps, SysAdmins, Architects | Ready for Execution | Step-by-step procedures for safety snapshots, core file removal, and MySQL database detachment on Hostinger. |
+| **Architecture** | [Phase 6: Edge CDN & Production Cutover](architecture/phase-6-edge-cdn-production-cutover.md) | DevOps, Frontend Engineers | Ready for Execution | Cloudflare edge deployment (Bulk CSV / Edge Worker), FTPS static sync, Full (Strict) SSL, and DNS cutover runbook. |
+| **Architecture** | [Phase 7: Verification & Monitoring](architecture/phase-7-post-cutover-verification-monitoring.md) | QA, SEO Specialists, DevOps | Ready for Execution | Live smoke testing, Search Console/Bing sitemap submission, Lighthouse Core Web Vitals audit, and 14-day SLA sign-off. |
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
 | **Infrastructure** | [GitHub Actions CI/CD Pipeline](infrastructure/github-actions-ci-cd.md) | DevOps, Frontend Engineers | Implemented & Production-Ready | Automated build, type-checking (`astro check`), security audit, and secure FTPS deployment to Hostinger. |
@@ -53,6 +56,9 @@ docs/
 │   ├── phase-2-extraction-scaffolding-report.md # Phase 2 XML parser & Astro project scaffolding
 │   ├── phase-3-ui-polish-components-report.md # Phase 3 BridgeAD and FAQ custom components
 │   ├── phase-4-seo-301-redirect-mapping.md    # Phase 4 SEO 301 & Cloudflare/Hostinger redirect rules
+│   ├── phase-5-wordpress-decommissioning-runbook.md # Phase 5 WP file eradication & DB detachment
+│   ├── phase-6-edge-cdn-production-cutover.md # Phase 6 Cloudflare CDN deployment & FTPS sync
+│   ├── phase-7-post-cutover-verification-monitoring.md # Phase 7 Live smoke test, GSC, & 14-day SLA
 │   ├── uat-pranast-tech-stack.md              # Current WordPress/PHP/Elementor stack audit
 │   └── wordpress-to-astro-migration-plan.md   # Target Astro + Markdown replatforming blueprint
 └── infrastructure/                            # Infrastructure runbooks, hosting tier & cutover procedures
