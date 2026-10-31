@@ -38,11 +38,13 @@ The repository uses enterprise-grade GitHub Actions workflows:
 
 ## 💻 Local Development & Build Commands
 
+For a full step-by-step walkthrough, prerequisites, and troubleshooting, see the [**Local Development Guide (`docs/local-development.md`)](docs/local-development.md)**.
+
 ```bash
 # Install dependencies
 npm ci
 
-# Start local Astro development server
+# Start local Astro development server (http://localhost:4321)
 npm run dev
 
 # Validate TypeScript & Astro Content Schemas
