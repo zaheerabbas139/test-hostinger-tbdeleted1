@@ -1,0 +1,98 @@
+name: CI (Build & Validate)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Ensure minimal permissions following least-privilege security principle
+permissions:
+  contents: read
+
+# Cancel redundant in-progress runs on same branch or pull request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  typecheck:
+    name: Type & Schema Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies (clean install)
+        run: npm ci
+
+      - name: Validate Astro Content Schemas & TypeScript
+        run: npm run check
+
+  security-audit:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Run dependency vulnerability audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  build:
+    name: Production Build & Asset Archival
+    needs: [typecheck]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies (clean install)
+        run: npm ci
+
+      - name: Compile Astro Static Site (SSG)
+        run: npm run build
+
+      - name: Verify build artifact integrity
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "::error::Build verification failed! dist/index.html does not exist."
+            exit 1
+          fi
+          echo "Build integrity verified: dist/ contains $(find dist -type f | wc -l) files."
+
+      - name: Archive production build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-production-dist
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error

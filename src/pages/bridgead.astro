@@ -1,0 +1,340 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BridgeADTabs from '../components/BridgeADTabs.astro';
+import BridgeADLifecycle from '../components/BridgeADLifecycle.astro';
+import WorkloadReadinessMatrix from '../components/WorkloadReadinessMatrix.astro';
+import FaqAccordion, { type FaqItem } from '../components/FaqAccordion.astro';
+
+const bridgeadFaqs: FaqItem[] = [
+  {
+    id: 'ba-1',
+    category: 'Cloud Solutions',
+    question: 'Do we need an agent on every user workstation?',
+    answer:
+      'Not for directory or Microsoft 365 workload migrations: one healthy agent per reachable domain is often sufficient. Device-local workflows such as cloud-native conversion require a healthy agent running as SYSTEM on each target Windows device for the conversion window.',
+  },
+  {
+    id: 'ba-2',
+    category: 'Security',
+    question: 'Does BridgeAD store our mailbox, file, or chat content?',
+    answer:
+      'No. All customer migration content is streamed directly in transit from source to destination. Only operational telemetry and metadata required to orchestrate work (job state, error counts, audit correlation IDs) are persisted – never bodies of mail, files, or messages.',
+  },
+  {
+    id: 'ba-3',
+    category: 'Cloud Solutions',
+    question: 'What is your Microsoft 365 workload migration readiness?',
+    answer:
+      'Exchange Online mailbox content (including certified any-to-any routes across Gmail, IMAP, on-premises Exchange, and PST/EML archives), SharePoint and OneDrive content, and Teams structure reconstruction are supported. Teams channel-message import is conditional on Microsoft protected-API approval.',
+  },
+  {
+    id: 'ba-4',
+    category: 'Security',
+    question: 'Where does our data live in the SaaS edition?',
+    answer:
+      'You pin a primary Azure region during provisioning. All customer-scoped data, secrets in Azure Key Vault, and audit logs remain strictly within that region under sovereign data residency guarantees.',
+  },
+  {
+    id: 'ba-5',
+    category: 'Managed IT Services',
+    question: 'Can we run BridgeAD on-prem or inside our own Azure subscription?',
+    answer:
+      'Yes. The self-hosted edition deploys via Helm chart, raw Kubernetes manifests, or Docker Compose, and runs entirely inside your subscription or private datacenter. Both SaaS and self-hosted editions ship from the exact same codebase.',
+  },
+  {
+    id: 'ba-6',
+    category: 'Security',
+    question: 'How is administrative access and privilege controlled?',
+    answer:
+      'BridgeAD enforces a strict five-tier Role-Based Access Control (RBAC) model: Viewer, Migration Operator, Tenant Admin, Platform Admin, and Super Admin. MFA is mandatory for every privileged role, and all privilege changes write to an immutable audit ledger.',
+  },
+  {
+    id: 'ba-7',
+    category: 'Pricing & Contracts',
+    question: 'Can BridgeAD integrate with our enterprise ITSM and SIEM pipelines?',
+    answer:
+      'Yes. BridgeAD provides authenticated REST APIs and signed webhook notifications for real-time job events, audit automation, and integration with ITSM platforms (ServiceNow, Jira Service Management) and SIEM solutions (Microsoft Sentinel, Splunk).',
+  },
+  {
+    id: 'ba-8',
+    category: 'Pricing & Contracts',
+    question: 'Do you offer a sandbox or proof-of-concept (PoC)?',
+    answer:
+      'Yes. We offer fully scoped technical proofs-of-concept. Contact our solutions architects with your source and destination tenant parameters to schedule a sandbox assessment.',
+  },
+];
+
+const bestFitPrograms = [
+  {
+    title: 'Active Directory Forest Consolidation',
+    desc: 'Discover, map, dry-run, and migrate directory objects through controlled waves with automated SID history and ACL remapping.',
+    icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+  },
+  {
+    title: 'M&A and Corporate Divestitures',
+    desc: 'Coordinate cross-environment identity scope, dry-run approvals, wave execution, and auditable proof across complex corporate boundaries.',
+    icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
+  },
+  {
+    title: 'Tenant-to-Tenant Modernization',
+    desc: 'Assess identity and Microsoft 365 workload readiness before committing content-transfer scope, avoiding unbudgeted cutover delays.',
+    icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z',
+  },
+  {
+    title: 'Regulated Self-Hosted Delivery',
+    desc: 'Keep 100% of the orchestration control plane inside customer-managed infrastructure with strict outbound-only network egress.',
+    icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+  },
+  {
+    title: 'MSP & Partner Migration Delivery',
+    desc: 'Standardize discovery assessment, pilot boundaries, operator roles, and evidence exports across multiple enterprise client programs.',
+    icon: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  },
+  {
+    title: 'Cloud-Native Endpoint Conversion',
+    desc: 'Convert domain-joined Windows machines to cloud-native Microsoft Entra ID join with BitLocker escrow verification and SYSTEM agent.',
+    icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  },
+];
+---
+
+<BaseLayout
+  title="BridgeAD - Intelligent Migration & Digital Transformation Platform"
+  description="Enterprise platform to simplify, govern, and accelerate Active Directory, Microsoft Entra ID, and Microsoft 365 migration programmes with zero data retention at rest."
+  image="/assets/images/intelligence-dashboard.webp"
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white py-20 lg:py-28 overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:20px_20px]"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-6">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          Enterprise Migration Platform
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+          Intelligent Active Directory & <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Microsoft 365 Migration</span>
+        </h1>
+        <p class="text-lg sm:text-xl text-slate-300 mb-8 leading-relaxed">
+          BridgeAD simplifies, governs, and accelerates Active Directory, Microsoft Entra ID, and Microsoft 365 cloud transformation programs with pre-flight dry runs, live telemetry, and cryptographic custody evidence.
+        </p>
+
+        <!-- Quick CTAs -->
+        <div class="flex flex-wrap items-center gap-4">
+          <a
+            href="/contact"
+            class="px-8 py-3.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5"
+          >
+            Request BridgeAD Demo
+          </a>
+          <a
+            href="#capabilities"
+            class="px-8 py-3.5 rounded-xl text-sm font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition"
+          >
+            Explore Workload Matrix
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Value Props Banner -->
+  <section class="py-8 bg-slate-900 border-y border-slate-800 text-slate-300 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="font-extrabold text-white text-lg sm:text-2xl mb-0.5">0 Bytes</div>
+          <div class="text-slate-400 text-xs">Customer Data Retained at Rest</div>
+        </div>
+        <div>
+          <div class="font-extrabold text-white text-lg sm:text-2xl mb-0.5">Up to 60%</div>
+          <div class="text-slate-400 text-xs">Faster Discovery & Scoping</div>
+        </div>
+        <div>
+          <div class="font-extrabold text-white text-lg sm:text-2xl mb-0.5">SHA-256</div>
+          <div class="text-slate-400 text-xs">Cryptographic Custody Evidence</div>
+        </div>
+        <div>
+          <div class="font-extrabold text-white text-lg sm:text-2xl mb-0.5">Dual-Mode</div>
+          <div class="text-slate-400 text-xs">Azure SaaS or Self-Hosted</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Showcase: Interactive Product Tabs -->
+  <section class="py-20 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2 block">Platform Engines</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          Two Focused Products for Migration Responsibilities
+        </h2>
+        <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
+          Choose <strong>BridgeAD Cloud Workloads</strong> for execution across Active Directory and Microsoft 365. Choose <strong>BridgeAD Intelligence</strong> for estate discovery, planning, governance, and audit verification.
+        </p>
+      </div>
+
+      <!-- Rich Interactive Component -->
+      <BridgeADTabs />
+    </div>
+  </section>
+
+  <!-- Interactive 5-Stage Migration Control Loop -->
+  <section class="py-20 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <BridgeADLifecycle />
+    </div>
+  </section>
+
+  <!-- Best-Fit Enterprise Programs Grid -->
+  <section class="py-20 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2 block">Use Cases & Scenarios</span>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          Start With the Migration You Need to Control
+        </h3>
+        <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
+          BridgeAD is built for AD-heavy, hybrid, and highly regulated programs where operator oversight, rollback planning, and evidence matter as much as moving objects.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {bestFitPrograms.map((program) => (
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition group flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={program.icon} />
+                </svg>
+              </div>
+              <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition">
+                {program.title}
+              </h4>
+              <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                {program.desc}
+              </p>
+            </div>
+            <a href="/contact" class="text-xs font-bold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 group-hover:gap-1.5 transition">
+              Consult on this scenario &rarr;
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Workload Readiness Matrix -->
+  <section id="capabilities" class="py-20 bg-white border-b border-slate-200 scroll-mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <WorkloadReadinessMatrix />
+    </div>
+  </section>
+
+  <!-- Security & Architecture Deep-Dive -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-6">
+          <span class="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2 block">Enterprise Trust</span>
+          <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6">
+            Migration Content is Streamed, Not Retained at Rest
+          </h3>
+          <p class="text-slate-300 leading-relaxed mb-6">
+            BridgeAD persists only the operational metadata needed to orchestrate and audit execution. Mail, files, credentials, and message bodies are never written to disk in BridgeAD infrastructure.
+          </p>
+          <ul class="space-y-4 text-sm text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">&check;</span>
+              <span><strong>End-to-End Encryption:</strong> All Microsoft Graph, Exchange, and control plane traffic enforces TLS 1.2+ with mutual authentication.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">&check;</span>
+              <span><strong>Azure Key Vault & DPAPI:</strong> Secrets remain encrypted; access tokens are ephemeral and never logged.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">&check;</span>
+              <span><strong>Five-Tier RBAC & Mandatory MFA:</strong> Granular roles (Viewer to Super Admin) with full audit traceability on all operations.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">&check;</span>
+              <span><strong>Self-Hosted Delivery:</strong> Deploy the control plane directly in your Azure subscription or Kubernetes cluster for zero egress.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="lg:col-span-6 bg-slate-800/80 p-8 rounded-3xl border border-slate-700/80">
+          <h4 class="text-xl font-bold text-white mb-4">Two Flexible Deployment Models</h4>
+          <div class="space-y-6">
+            <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-white text-base">Managed Azure SaaS</span>
+                <span class="text-xs font-mono px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded">Fastest Path</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Multi-tenant managed service hosted on Azure with pinned regional data residency. Per-seat or per-mailbox licensing with zero infrastructure management.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-white text-base">Customer-Hosted Self-Managed</span>
+                <span class="text-xs font-mono px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded">Zero Cloud Egress</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Single-tenant deployment inside your Azure subscription, Kubernetes cluster, or Docker host via Helm charts. Every byte of customer data stays strictly inside your compliance perimeter.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BridgeAD Product Specific FAQ -->
+  <section class="py-20 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2 block">Technical Answers</span>
+        <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+          Frequently Asked Questions About BridgeAD
+        </h3>
+        <p class="text-slate-600 text-sm">
+          Detailed technical answers covering architecture, workload readiness, and security boundaries.
+        </p>
+      </div>
+
+      <FaqAccordion items={bridgeadFaqs} showSearch={false} />
+    </div>
+  </section>
+
+  <!-- Bottom Conversion CTA -->
+  <section class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center shadow-xl">
+        <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+          Accelerate Your Active Directory & M365 Modernization
+        </h3>
+        <p class="text-blue-100 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          Speak with our identity solutions architects for a technical walkthrough or to schedule a proof-of-concept for your tenant environment.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="/contact"
+            class="px-8 py-3.5 rounded-xl text-sm font-bold bg-white text-blue-900 hover:bg-blue-50 shadow-lg transition transform hover:-translate-y-0.5"
+          >
+            Request BridgeAD Demo
+          </a>
+          <a
+            href="/case-studies"
+            class="px-8 py-3.5 rounded-xl text-sm font-bold bg-blue-700/60 hover:bg-blue-700 text-white border border-blue-400/40 transition"
+          >
+            Read Client Case Studies
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

@@ -12,6 +12,7 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 | **Architecture** | [WordPress to Astro Migration Blueprint](architecture/wordpress-to-astro-migration-plan.md) | Frontend Engineers, Architects | Approved Strategy | Technical blueprint for decommissioning WordPress/Elementor and replatforming to Astro Content Engine (SSG + Markdown). |
 | **Architecture** | [Phase 1: Content Inventory & Schema](architecture/phase-1-content-inventory-schema.md) | Frontend Engineers, Content Team | Completed & Validated | Comprehensive inventory of all 17 pages, 6 blog posts, 40 media assets, forms, and Astro Zod collections from WP export. |
 | **Architecture** | [Phase 2: Extraction & Scaffolding Report](architecture/phase-2-extraction-scaffolding-report.md) | Frontend Engineers, Architects | Completed & Validated | Pipeline parsing 100% XML content directly into typed Markdown collections, Astro 5 scaffolding, and 21 static routes compiled in 1.13s. |
+| **Architecture** | [Phase 3: UI Polish & Custom Components](architecture/phase-3-ui-polish-components-report.md) | Frontend Engineers, UI/UX | Completed & Validated | Accessible WAI-ARIA tabs for BridgeAD showcase, 5-stage migration stepper, filterable capability matrix, and SEO FAQ accordion. |
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
 
@@ -86,4 +87,5 @@ docs/
 | **ADR-002** | Staged subdomain migration prior to DNS cutover | **Adopted** | Eliminates service downtime and avoids Hostinger single-domain binding conflicts. |
 | **ADR-003** | Transition from WordPress/Elementor to Astro SSG | **Adopted** | Drastically reduces hosting footprint, eliminates continuous CVE patch churn, and maximizes Core Web Vitals. |
 | **ADR-004** | Direct XML Content Extraction & Root Scaffolding | **Adopted** | Offline-verifiable pipeline parsing WXR XML directly with zero-JS Astro 5 root architecture. |
+| **ADR-005** | Dedicated Bespoke Routes with Island-Based Progressive Enhancement | **Adopted** | Zero-dependency WAI-ARIA tabs and semantic HTML5 FAQ accordions with JSON-LD schema for high-conversion pages. |
 
