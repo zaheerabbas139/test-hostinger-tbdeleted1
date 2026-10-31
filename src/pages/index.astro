@@ -9,26 +9,36 @@ const { Content } = homeEntry ? await render(homeEntry) : { Content: null };
 <BaseLayout title={homeEntry?.data.title || 'Home'} description={homeEntry?.data.description}>
   <!-- Hero Section -->
   <section
-    class="relative bg-cover bg-center text-white py-24 lg:py-32 overflow-hidden"
+    class="relative bg-cover bg-center text-white py-24 sm:py-28 lg:py-36 overflow-hidden flex items-center justify-center min-h-[520px]"
     style="background-image: url('/assets/images/image-23-scaled-1.png');"
   >
-    <div class="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-blue-950/90 to-slate-900/95"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-          A Trusted IT Partner for <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Secure, Scalable Growth</span>
-        </h1>
-        <p class="text-lg sm:text-xl text-slate-300 mb-8 leading-relaxed">
-          We deliver managed IT support, Microsoft cloud solutions, cyber security, and digital transformation helping organisations stay resilient, compliant, and ready for what's next.
-        </p>
-        <div class="flex flex-wrap items-center gap-4">
-          <a
-            href="/contact/"
-            class="px-8 py-3.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5"
-          >
-            Get In Touch
-          </a>
-        </div>
+    <!-- Deep blue overlay matching the original brand aesthetic -->
+    <div class="absolute inset-0 bg-[#255d88]/85 backdrop-blur-[0.5px]"></div>
+
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+      <h1
+        class="text-3xl sm:text-5xl lg:text-[56px] font-bold text-white tracking-tight leading-[1.15] mb-5 max-w-4xl"
+        style="font-family: 'Roboto Serif', Georgia, serif;"
+      >
+        A Trusted IT Partner for Secure,<br class="hidden sm:inline" /> Scalable Growth
+      </h1>
+      <p
+        class="text-base sm:text-lg lg:text-[17px] text-white/95 max-w-3xl mx-auto mb-8 leading-relaxed font-normal"
+        style="font-family: 'Roboto Serif', Georgia, serif;"
+      >
+        We deliver managed IT support, Microsoft cloud solutions, cyber security, and digital transformation helping organisations stay resilient, compliant, and ready for what’s next.
+      </p>
+      <div>
+        <a
+          href="/contact/"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-[10px] text-base font-semibold bg-white text-[#0F69A5] hover:bg-slate-50 shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+          style="font-family: 'Roboto Serif', Georgia, serif;"
+        >
+          <span>Get In Touch</span>
+          <svg class="w-4 h-4 fill-current transition-transform group-hover:translate-x-0.5" viewBox="0 0 448 512" aria-hidden="true">
+            <path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </section>
