@@ -13,6 +13,7 @@ Welcome to the central documentation portal for the **Pranast Digital Platform**
 | **Architecture** | [Phase 1: Content Inventory & Schema](architecture/phase-1-content-inventory-schema.md) | Frontend Engineers, Content Team | Completed & Validated | Comprehensive inventory of all 17 pages, 6 blog posts, 40 media assets, forms, and Astro Zod collections from WP export. |
 | **Architecture** | [Phase 2: Extraction & Scaffolding Report](architecture/phase-2-extraction-scaffolding-report.md) | Frontend Engineers, Architects | Completed & Validated | Pipeline parsing 100% XML content directly into typed Markdown collections, Astro 5 scaffolding, and 21 static routes compiled in 1.13s. |
 | **Architecture** | [Phase 3: UI Polish & Custom Components](architecture/phase-3-ui-polish-components-report.md) | Frontend Engineers, UI/UX | Completed & Validated | Accessible WAI-ARIA tabs for BridgeAD showcase, 5-stage migration stepper, filterable capability matrix, and SEO FAQ accordion. |
+| **Architecture** | [Phase 4: SEO & 301 Redirect Mapping](architecture/phase-4-seo-301-redirect-mapping.md) | SEO Specialists, DevOps, Architects | Completed & Validated | Defense-in-depth redirect rules (.htaccess & Cloudflare edge worker/bulk CSV) preserving 100% SEO link equity and hardening against WP scanners. |
 | **Infrastructure** | [Cross-Account Hostinger Migration](infrastructure/hostinger-website-migration.md) | DevOps, SysAdmins | Operational Runbook | Step-by-step cutover procedures from source account (`u715171369`) to target account (`u797343708`) with zero data loss. |
 | **Infrastructure** | [Business to Unlimited Plan Move](infrastructure/business-to-unlimited-migration-plan.md) | DevOps, Account Owners | Operational Runbook | Sequential migration order, backup strategies, and cutover steps for 5 websites across hosting tiers. |
 | **Infrastructure** | [GitHub Actions CI/CD Pipeline](infrastructure/github-actions-ci-cd.md) | DevOps, Frontend Engineers | Implemented & Production-Ready | Automated build, type-checking (`astro check`), security audit, and secure FTPS deployment to Hostinger. |
@@ -47,6 +48,9 @@ docs/
 ├── README.md                                  # Central architecture & ops hub (this file)
 ├── architecture/                              # System designs, technical audits, and future blueprints
 │   ├── phase-1-content-inventory-schema.md    # Phase 1 WordPress catalog & Astro typed schema
+│   ├── phase-2-extraction-scaffolding-report.md # Phase 2 XML parser & Astro project scaffolding
+│   ├── phase-3-ui-polish-components-report.md # Phase 3 BridgeAD and FAQ custom components
+│   ├── phase-4-seo-301-redirect-mapping.md    # Phase 4 SEO 301 & Cloudflare/Hostinger redirect rules
 │   ├── uat-pranast-tech-stack.md              # Current WordPress/PHP/Elementor stack audit
 │   └── wordpress-to-astro-migration-plan.md   # Target Astro + Markdown replatforming blueprint
 └── infrastructure/                            # Infrastructure runbooks, hosting tier & cutover procedures
@@ -91,4 +95,5 @@ docs/
 | **ADR-004** | Direct XML Content Extraction & Root Scaffolding | **Adopted** | Offline-verifiable pipeline parsing WXR XML directly with zero-JS Astro 5 root architecture. |
 | **ADR-005** | Dedicated Bespoke Routes with Island-Based Progressive Enhancement | **Adopted** | Zero-dependency WAI-ARIA tabs and semantic HTML5 FAQ accordions with JSON-LD schema for high-conversion pages. |
 | **ADR-006** | Decoupled CI/CD Workflows with FTPS Hostinger Synchronization | **Adopted** | Strict PoLP permissions, cancel-in-progress CI, safe non-canceling CD, automated Astro schema validation, and zero-downtime deployment. |
+| **ADR-007** | Dual-Tier SEO Redirection (Cloudflare Edge Worker + Origin .htaccess) | **Adopted** | Eliminates origin compute overhead with sub-10ms edge redirects while providing 100% fallback reliability and HTTP 410 crawler de-indexing. |
 

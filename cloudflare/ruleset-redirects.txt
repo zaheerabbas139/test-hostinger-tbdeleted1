@@ -1,0 +1,102 @@
+# ==============================================================================
+# Cloudflare Ruleset Engine: Single / Dynamic Redirect Expressions
+# Location: Cloudflare Dashboard -> Rules -> Redirect Rules
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# RULE 1: Legacy Blog Posts to Astro /blog/ Subpath
+# ------------------------------------------------------------------------------
+# Expression:
+(http.request.uri.path in {
+  "/digital-transformation-where-to-start"
+  "/digital-transformation-where-to-start/"
+  "/the-power-of-microsoft-power-platform"
+  "/the-power-of-microsoft-power-platform/"
+  "/understanding-zero-trust-security-architecture"
+  "/understanding-zero-trust-security-architecture/"
+  "/google-sheets-vs-dynamics-365"
+  "/google-sheets-vs-dynamics-365/"
+  "/why-digital-transformation-projects-fail"
+  "/why-digital-transformation-projects-fail/"
+  "/the-hidden-security-risks-of-rapid-digital-transformation"
+  "/the-hidden-security-risks-of-rapid-digital-transformation/"
+})
+
+# Target Dynamic Expression:
+# concat("https://", http.host, "/blog", regex_replace(http.request.uri.path, "/$", ""))
+# Status Code: 301 (Moved Permanently)
+# Preserve query string: Yes
+
+
+# ------------------------------------------------------------------------------
+# RULE 2: Legacy Case Studies to Astro /case-studies/ Subpath
+# ------------------------------------------------------------------------------
+# Expression:
+(http.request.uri.path in {
+  "/globaltech-solutions"
+  "/globaltech-solutions/"
+  "/premier-law-associates"
+  "/premier-law-associates/"
+})
+
+# Target Dynamic Expression:
+# concat("https://", http.host, "/case-studies", regex_replace(http.request.uri.path, "/$", ""))
+# Status Code: 301 (Moved Permanently)
+# Preserve query string: Yes
+
+
+# ------------------------------------------------------------------------------
+# RULE 3: Legacy Pages & Alias Normalization
+# ------------------------------------------------------------------------------
+# Expression:
+(http.request.uri.path in {"/terms-of-services" "/terms-of-services/"})
+# Target URL: https://pranast.com/terms-of-service (Status: 301)
+
+# Expression:
+(http.request.uri.path in {"/home" "/home/" "/home-page" "/home-page/"})
+# Target URL: https://pranast.com/ (Status: 301)
+
+# Expression:
+(http.request.uri.path in {"/technology-innovation" "/technology-innovation/"})
+# Target URL: https://pranast.com/bridgead (Status: 301)
+
+# Expression:
+(http.request.uri.path in {"/services" "/services/"})
+# Target URL: https://pranast.com/digital-transformation (Status: 301)
+
+# Expression:
+(http.request.uri.path in {"/resources" "/resources/" "/insights" "/insights/" "/blogs-2" "/blogs-2/" "/blogs" "/blogs/"})
+# Target URL: https://pranast.com/blog (Status: 301)
+
+
+# ------------------------------------------------------------------------------
+# RULE 4: Legacy Taxonomies & Feeds
+# ------------------------------------------------------------------------------
+# Expression:
+(starts_with(http.request.uri.path, "/category/") or starts_with(http.request.uri.path, "/tag/") or ends_with(http.request.uri.path, "/feed/") or ends_with(http.request.uri.path, "/feed"))
+# Target URL: https://pranast.com/blog (Status: 301)
+
+
+# ------------------------------------------------------------------------------
+# RULE 5: Legacy WP Media Uploads to Astro Static Assets
+# ------------------------------------------------------------------------------
+# Expression:
+starts_with(http.request.uri.path, "/wp-content/uploads/")
+
+# Dynamic Target URL:
+# regex_replace(http.request.uri.path, "^/wp-content/uploads/(?:.+/)?([^/]+)$", "https://pranast.com/assets/images/${1}")
+# Status Code: 301 (Moved Permanently)
+
+
+# ------------------------------------------------------------------------------
+# RULE 6: Security WAF / Transform Rule: Terminate WP Core Attack Surface
+# Location: Cloudflare Dashboard -> Security -> WAF -> Custom Rules
+# Action: Block (403) or Custom Response (410 Gone)
+# ------------------------------------------------------------------------------
+# Expression:
+(starts_with(http.request.uri.path, "/wp-admin") or
+ starts_with(http.request.uri.path, "/wp-includes") or
+ starts_with(http.request.uri.path, "/wp-content/plugins") or
+ starts_with(http.request.uri.path, "/wp-json") or
+ http.request.uri.path in {"/xmlrpc.php" "/wp-login.php" "/wp-config.php" "/trackback"})
+

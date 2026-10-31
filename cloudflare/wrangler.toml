@@ -1,0 +1,11 @@
+name = "pranast-edge-redirects"
+main = "edge-redirects.js"
+compatibility_date = "2026-10-31"
+
+# Production Routes
+# routes = [
+#   { pattern = "uat.pranast.com/*", zone_name = "pranast.com" },
+#   { pattern = "pranast.com/*", zone_name = "pranast.com" },
+#   { pattern = "www.pranast.com/*", zone_name = "pranast.com" }
+# ]
+
